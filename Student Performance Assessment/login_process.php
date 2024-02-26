@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           if ($row['user_type'] == 'hod') {
             header("Location: view_results.php");
           } else {
-            header("Location: admin_dashboard.php");
+            header("Location: admin_frontend.php");
             exit();
           }
         } else {
