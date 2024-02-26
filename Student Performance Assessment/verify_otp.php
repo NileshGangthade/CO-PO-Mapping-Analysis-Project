@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        header("Location: new_password.php?email=" . urlencode($email) . "&from=verify_otp");
+        header("Location: new_password.html?email=" . urlencode($email) . "&from=verify_otp");
         exit();
     } else {
         ?>
