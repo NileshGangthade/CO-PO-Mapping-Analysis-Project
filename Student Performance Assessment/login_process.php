@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require 'config.php';
 
@@ -27,29 +28,70 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           if ($row['user_type'] == 'hod') {
             header("Location: view_results.php");
           } else {
-            header("Location: admin_dashbord.php");
+            header("Location: admin_dashboard.php");
             exit();
           }
         } else {
-          header("Location: dashbord.php");
+          header("Location: dashboard.php");
           exit();
         }
       } else {
-        $_SESSION['error'] = "Invalid email or password.";
-        header("Location: login.html");
-        exit();
+        ?>
+        <script>
+          alert("Invalid password or email.");
+          window.location.href = "login.html";
+        </script>
+        <?php
       }
     } else {
-      $_SESSION['error'] = "Invalid email or password.";
-      header("Location: login.html");
-      exit();
+      $stmt->close();
+
+      // Check if the user exists in the temp_table
+      $sql_temp = "SELECT * FROM temp_table WHERE email = ?";
+      $stmt_temp = $conn->prepare($sql_temp);
+
+      if ($stmt_temp) {
+        $stmt_temp->bind_param("s", $email);
+        $stmt_temp->execute();
+        $result_temp = $stmt_temp->get_result();
+
+        if ($result_temp->num_rows > 0) {
+          $row_temp = $result_temp->fetch_assoc();
+
+          if (password_verify($password, $row_temp['password'])) {
+            $_SESSION['user_id'] = $row_temp['id'];
+            $_SESSION['user_email'] = $row_temp['email'];
+            header("Location: wait_for_approval.php");
+            exit();
+          } else {
+            ?>
+            <script>
+              alert("Invalid password or email.");
+              window.location.href = "login.html";
+            </script>
+            <?php
+          }
+        } else {
+          ?>
+          <script>
+            alert("Invalid password or email.");
+            window.location.href = "login.html";
+          </script>
+          <?php
+        }
+
+        $stmt_temp->close();
+      }
     }
   } else {
-    $_SESSION['error'] = "Error occurred.";
-    header("Location: login.html");
-    exit();
+    ?>
+    <script>
+      alert("Error: <?php echo $conn->error; ?>");
+    </script>
+    <?php
   }
 }
 
 $conn->close();
+
 ?>
