@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (password_verify($password, $row['password'])) {
         $_SESSION['user_id'] = $row['id'];
         $_SESSION['is_admin'] = $row['is_admin'];
+        $_SESSION['user_email'] = $row['email']; // Store user email in session
+        $_SESSION['user_name'] = $row['name'];
         $_SESSION['user_type'] = $row['user_type'];
         $_SESSION['department'] = $row['department'];
 

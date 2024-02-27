@@ -1,3 +1,13 @@
+<?php
+session_start();
+error_reporting(0);
+include('dbconnection.php');
+if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
+  header("Location: login.html");
+  exit();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,158 +20,165 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
   <title>Admin dashboard</title>
-  <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="assets/css/admin_dashboard.css">
+  
 
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-
-
-<!-- Additional CSS Files -->
-<link rel="stylesheet" href="assets/css/dev.css">
-<link rel="stylesheet" href="assets/css/animated.css">
+  <!-- Dashboard css -->
+  <link href="assets/css/lib/chartist/chartist.min.css" rel="stylesheet">
+    <!-- Styles -->
+    <link href="assets/css/lib/owl.carousel.min.css" rel="stylesheet" />
+    <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/lib/unix.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
+<?php include_once('sidebar.php');?>
+<?php include_once('header.php');?>
 
-<!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <nav class="main-nav">
-            <!-- ***** Logo Start ***** -->
-            <!-- <a href="index.html" class="logo">
-              <img src="assets/images/logo.png" alt="Chain App Dev">
-            </a> -->
-            <!-- ***** Logo End ***** -->
-            <!-- ***** Menu Start ***** -->
-            <ul class="nav">
-              <li class="scroll-to-section"><a href="index.php" class="active">Home</a></li>
-              <li class="scroll-to-section"><a href="index.php#services">Services</a></li>
-              <li class="scroll-to-section"><a href="index.php#about">About</a></li>
-              <!-- <li class="scroll-to-section"><a href="#pricing">Pricing</a></li> -->
-              <!-- <li class="scroll-to-section"><a href="#newsletter">Newsletter</a></li> -->
-              <li><div class="gradient-button"><a id="modal_trigge" href="login.php"><i class="fa fa-sign-in-alt"></i> Sign In Now</a></div></li> 
-            </ul>        
-            <a class='menu-trigger'>
-                <span>Menu</span>
-            </a>
-            <!-- ***** Menu End ***** -->
-          </nav>
+  <div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Dashboard</h1>
+                            </div>
+                        </div>
+                    </div><!-- /# column -->
+                    <div class="col-lg-4 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <ol class="breadcrumb text-right">
+                                    <li><a href="#">Dashboard</a></li>
+                                    <li class="active">Home</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div><!-- /# column -->
+                </div><!-- /# row -->
+                <div id="main-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-file f-s-22 color-primary border-primary round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                        <?php 
+                        
+                                          $sql1 ="SELECT * from  tblcourse";
+                                          $query1 = $dbh -> prepare($sql1);
+                                          $query1->execute();
+                                          $results1=$query1->fetchAll(PDO::FETCH_OBJ);
+                                          $totcourse=$query1->rowCount();
+                                        ?>
+                                        <h4 style="color: blue">Total Course</h4>
+                                        <h4 style="color: blue"><?php echo htmlentities($totcourse);?></h4>
+                                        <a href="course.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-file f-s-22 color-warning border-warning round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                        <?php 
+                        
+                                          $sql2 ="SELECT * from  tblsubject";
+                                          $query2 = $dbh -> prepare($sql2);
+                                          $query2->execute();
+                                          $results2=$query2->fetchAll(PDO::FETCH_OBJ);
+                                          $totsub=$query2->rowCount();
+                                        ?>
+                                        <h4 style="color: blue">Total Subject</h4>
+                                         <h4 style="color: blue"><?php echo htmlentities($totsub);?></h4>
+                                         <a href="subject.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-user f-s-22 color-success border-success round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                        <?php 
+                        
+                                          $sql3 ="SELECT * from  tblteacher";
+                                          $query3 = $dbh -> prepare($sql3);
+                                          $query3->execute();
+                                          $results3=$query3->fetchAll(PDO::FETCH_OBJ);
+                                          $totteacher=$query3->rowCount();
+                                        ?>
+                                       <h4 style="color: blue">Total Teacher</h4>
+                                         <h4 style="color: blue"><?php echo htmlentities($totteacher);?></h4>
+                                         <a href="manage-teacher.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     
+                    </div>
+                  
+                  
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </header>
-  <!-- ***** Header Area End ***** -->
-  <h1>Welcome to the Admin dashboard</h1>
 
-  <h2>Waiting for Approval</h2>
-  <div class="container">
-    <table class="display" id="waitingTable">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">User Type</th>
-          <th scope="col">Department</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $result_waiting->fetch_assoc()) : ?>
-          <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo $row['user_type']; ?></td>
-            <td><?php echo $row['department']; ?></td>
-            <td><?php echo $row['name']; ?></td>
-            <td><?php echo $row['email']; ?></td>
-            <td>
-              <button onclick="handleAction('approve', <?php echo $row['id']; ?>)">Approve</button>
-              <button onclick="handleAction('reject', <?php echo $row['id']; ?>)">Reject</button>
-            </td>
-          </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </div>
-
-  <h2>Approved List</h2>
-  <div class="container">
-    <table class="display" id="approvalTable">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">User Type</th>
-          <th scope="col">Department</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $result_approved->fetch_assoc()) : ?>
-          <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo $row['user_type']; ?></td>
-            <td><?php echo $row['department']; ?></td>
-            <td><?php echo $row['name']; ?></td>
-            <td><?php echo $row['email']; ?></td>
-            <td>
-              <button onclick="handleAction('delete', <?php echo $row['id']; ?>)">Delete</button> <!-- Add this line -->
-            </td>
-          </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </div>
-
-  <script>
-    function handleAction(action, id) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'handle_approval.php', true);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          alert(xhr.responseText);
-          location.reload();
-        }
-      };
-      xhr.send('action=' + action + '&id=' + id);
-    }
-  </script>
-  <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
-  <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-    });
-  </script>
-  <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-    });
-  </script>
-  <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-    });
-  </script>
-  <script>
-    $(document).ready(function() {
-      $('table').DataTable();
-    });
-  </script>
-
-  <!-- Scripts -->
+  <!-- Scripts
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/owl-carousel.js"></script>
   <script src="assets/js/animation.js"></script>
   <script src="assets/js/imagesloaded.js"></script>
   <script src="assets/js/popup.js"></script>
-  <script src="assets/js/custom.js"></script>
+  <script src="assets/js/custom.js"></script> -->
+
+  <!-- scripts for dashboard -->
+   <!-- jquery vendor -->
+   <script src="assets/js/lib/jquery.min.js"></script>
+    <!-- nano scroller -->
+    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+    <!-- sidebar -->
+    <script src="assets/js/lib/menubar/sidebar.js"></script>
+    <!-- bootstrap -->
+    <script src="assets/js/lib/bootstrap.min.js"></script>
+    <!-- Circle Progress Bar -->
+    <script src="assets/js/lib/circle-progress/circle-progress.min.js"></script>
+    <script src="assets/js/lib/circle-progress/circle-progress-init.js"></script>
+    <script src="assets/js/lib/chartist/chartist.min.js"></script>
+    <script src="assets/js/lib/chartist/chartist-init.js"></script>
+    <script src="assets/js/lib/sparklinechart/jquery.sparkline.min.js"></script>
+    <script src="assets/js/lib/sparklinechart/sparkline.init.js"></script>
+    <!-- Bar Chat Js -->
+    <script src="assets/js/lib/peitychart/jquery.peity.min.js"></script><!-- scripit init-->
+    <script src="assets/js/lib/peitychart/peitychart.init.js"></script><!-- scripit init-->
+
+
+    <script src="assets/js/lib/datamap/d3.min.js"></script>
+    <script src="assets/js/lib/datamap/topojson.js"></script>
+    <script src="assets/js/lib/datamap/datamaps.world.min.js"></script>
+    <script src="assets/js/lib/datamap/datamap-init.js"></script>
+    <!-- scripit init-->
+    <script src="assets/js/lib/owl-carousel/owl.carousel.min.js"></script>
+    <script src="assets/js/lib/owl-carousel/owl.carousel-init.js"></script>
+
+    <script src="assets/js/lib/morris-chart/raphael-min.js"></script>
+    <script src="assets/js/lib/morris-chart/morris.js"></script>
+    <script src="assets/js/lib/morris-chart/morris-init.js"></script>
+
+    <script src="assets/js/scripts.js"></script>
 </body>
 </html>
