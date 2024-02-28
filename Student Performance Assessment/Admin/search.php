@@ -1,10 +1,10 @@
 <?php
 session_start();
 error_reporting(0);
-include('dbconnection.php');
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-  header("Location: login.html");
-  exit();
+include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
+    header("Location: login.html");
+    exit();
 }else{
 
 
@@ -26,14 +26,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
 
   <!-- search css -->
     <!-- Styles -->
-    <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
-    <link href="assets/css/lib/datatable/dataTables.bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/lib/datatable/buttons.bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
-    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/lib/unix.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/datatable/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/lib/datatable/buttons.bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 
 
 </head>
@@ -111,6 +111,7 @@ $sdata=$_POST['searchdata'];
                                                     <th>Employee Name</th>
                                                     <th>Course Name</th>
                                                     <th>Subject Name</th>
+                                                    <th>Academic Year</th>
                                                     <th>Allocation Date</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -137,7 +138,7 @@ $total_no_of_pages = ceil($total_rows / $no_of_records_per_page);
   $second_last = $total_no_of_pages - 1; // total page minus 1
                                                
 
-$sql="SELECT tblsuballocation.ID as suballid,tblsuballocation.CourseID,tblsuballocation.Teacherempid,tblsuballocation.Subid,tblsuballocation.AllocationDate,tblteacher.EmpID,tblteacher.FirstName,tblteacher.LastName,tblcourse.BranchName,tblcourse.CourseName,tblsubject.ID,tblsubject.CourseID,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode from tblsuballocation join tblteacher on tblteacher.EmpID=tblsuballocation.Teacherempid join tblcourse on tblcourse.ID=tblsuballocation.CourseID join tblsubject on tblsubject.ID=tblsuballocation.Subid where tblteacher.EmpID like '$sdata%' || tblteacher.FirstName like '$sdata%' || tblteacher.LastName like '$sdata%' || tblsubject.SubjectFullname like '$sdata%'";
+$sql="SELECT tblsuballocation.ID as suballid,tblsuballocation.CourseID,tblsuballocation.Teacherempid,tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate,teachers_data.EmpID,teachers_data.FirstName,teachers_data.LastName,tblcourse.BranchName,tblcourse.CourseName,tblsubject.ID,tblsubject.CourseID,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode from tblsuballocation join teachers_data on teachers_data.EmpID=tblsuballocation.Teacherempid join tblcourse on tblcourse.ID=tblsuballocation.CourseID join tblsubject on tblsubject.ID=tblsuballocation.Subid where teachers_data.EmpID like '$sdata%' || teachers_data.FirstName like '$sdata%' || teachers_data.LastName like '$sdata%' || tblsubject.SubjectFullname like '$sdata%'";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -158,6 +159,9 @@ foreach($results as $row)
                                                     </td>
                                                    <td>
                                                         <?php  echo htmlentities($row->SubjectFullname);?>(<?php  echo htmlentities($row->SubjectCode);?>)
+                                                    </td>
+                                                    <td>
+                                                        <?php  echo htmlentities($row->academic_year);?>
                                                     </td>
                                                     <td>
                                                         <?php  echo htmlentities($row->AllocationDate);?>
@@ -273,18 +277,18 @@ echo "<li><a href='?page_no=$total_no_of_pages'>Last &rsaquo;&rsaquo;</a></li>";
 
   
   <!-- scripts for search-->
- <!-- jquery vendor -->
- <script src="assets/js/lib/bootstrap.min.js"></script>
+  <!-- jquery vendor -->
+  <script src="../assets/js/lib/bootstrap.min.js"></script>
     <!-- bootstrap -->
-    <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+    <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
     <!-- nano scroller -->
-    <script src="assets/js/lib/menubar/sidebar.js"></script>
-    <script src="assets/js/lib/preloader/pace.min.js"></script>
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/preloader/pace.min.js"></script>
     <!-- sidebar -->
-    <script src="assets/js/lib/data-table/datatables.min.js"></script>
-    <script src="assets/js/lib/data-table/datatables-init.js"></script>
-    <script src="assets/js/scripts.js"></script>
+    <script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/datatables-init.js"></script>
+    <script src="../assets/js/scripts.js"></script>
 </body>
 </html>
 <?php }  ?>

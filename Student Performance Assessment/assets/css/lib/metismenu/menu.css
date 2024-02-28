@@ -64,7 +64,7 @@ File: Menu
   color: #313a46 !important;
   font-size: 24px;
   text-transform: uppercase;
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: Times New Roman, Times, serif;
   font-weight: 600;
   letter-spacing: 1px;
   line-height: 70px;
@@ -166,7 +166,7 @@ File: Menu
   position: absolute;
   right: 20px;
   display: inline-block;
-  font-family: 'Material Design Icons';
+  font-family: Times New Roman, Times, serif;
   text-rendering: auto;
   line-height: 22px;
   font-size: 18px;
@@ -244,7 +244,7 @@ File: Menu
   font-size: 11px;
   text-transform: uppercase;
   color: #98a6ad;
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: Times New Roman, Times, serif;
 }
 .enlarged .slimScrollDiv,
 .enlarged .slimscroll-menu {

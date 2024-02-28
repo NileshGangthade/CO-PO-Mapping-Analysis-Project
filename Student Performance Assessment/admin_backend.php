@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'config.php';
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
+if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
   header("Location: login.html");
   exit();
 }

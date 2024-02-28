@@ -1,13 +1,13 @@
 <?php
 session_start();
 error_reporting(0);
-include('dbconnection.php');
+include('../dbconnection.php');
 
 // For techaer
 if(!empty($_POST["courseid"])) 
 {
 $courseid=$_POST["courseid"];
-$sql=$dbh->prepare("SELECT * FROM tblteacher WHERE CourseID=:courseid");
+$sql=$dbh->prepare("SELECT * FROM teachers_data WHERE CourseID=:courseid");
 $sql->bindParam(':courseid',$courseid,PDO::PARAM_STR);
 $sql->execute();
 $results=$sql->fetchAll(PDO::FETCH_OBJ);

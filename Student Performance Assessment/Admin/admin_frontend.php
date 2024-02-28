@@ -1,11 +1,12 @@
 <?php
 session_start();
 error_reporting(0);
-include('dbconnection.php');
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-  header("Location: login.html");
-  exit();
+include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
+    header("Location: login.html");
+    exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -23,15 +24,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
   
 
   <!-- Dashboard css -->
-  <link href="assets/css/lib/chartist/chartist.min.css" rel="stylesheet">
+  <link href="Student Performance Assessment/assets/css/lib/chartist/chartist.min.css" rel="stylesheet">
     <!-- Styles -->
-    <link href="assets/css/lib/owl.carousel.min.css" rel="stylesheet" />
-    <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
-    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
-    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/lib/unix.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/lib/owl.carousel.min.css" rel="stylesheet" />
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -115,7 +116,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
                                     <div class="media-body media-text-right">
                                         <?php 
                         
-                                          $sql3 ="SELECT * from  tblteacher";
+                                          $sql3 ="SELECT * from  teachers_data";
                                           $query3 = $dbh -> prepare($sql3);
                                           $query3->execute();
                                           $results3=$query3->fetchAll(PDO::FETCH_OBJ);
@@ -148,37 +149,37 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
 
   <!-- scripts for dashboard -->
    <!-- jquery vendor -->
-   <script src="assets/js/lib/jquery.min.js"></script>
+   <script src="../assets/js/lib/jquery.min.js"></script>
     <!-- nano scroller -->
-    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
     <!-- sidebar -->
-    <script src="assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
     <!-- bootstrap -->
-    <script src="assets/js/lib/bootstrap.min.js"></script>
+    <script src="../assets/js/lib/bootstrap.min.js"></script>
     <!-- Circle Progress Bar -->
-    <script src="assets/js/lib/circle-progress/circle-progress.min.js"></script>
-    <script src="assets/js/lib/circle-progress/circle-progress-init.js"></script>
-    <script src="assets/js/lib/chartist/chartist.min.js"></script>
-    <script src="assets/js/lib/chartist/chartist-init.js"></script>
-    <script src="assets/js/lib/sparklinechart/jquery.sparkline.min.js"></script>
-    <script src="assets/js/lib/sparklinechart/sparkline.init.js"></script>
+    <script src="../assets/js/lib/circle-progress/circle-progress.min.js"></script>
+    <script src="../assets/js/lib/circle-progress/circle-progress-init.js"></script>
+    <script src="../assets/js/lib/chartist/chartist.min.js"></script>
+    <script src="../assets/js/lib/chartist/chartist-init.js"></script>
+    <script src="../assets/js/lib/sparklinechart/jquery.sparkline.min.js"></script>
+    <script src="../assets/js/lib/sparklinechart/sparkline.init.js"></script>
     <!-- Bar Chat Js -->
-    <script src="assets/js/lib/peitychart/jquery.peity.min.js"></script><!-- scripit init-->
-    <script src="assets/js/lib/peitychart/peitychart.init.js"></script><!-- scripit init-->
+    <script src="../assets/js/lib/peitychart/jquery.peity.min.js"></script><!-- scripit init-->
+    <script src="../assets/js/lib/peitychart/peitychart.init.js"></script><!-- scripit init-->
 
 
-    <script src="assets/js/lib/datamap/d3.min.js"></script>
-    <script src="assets/js/lib/datamap/topojson.js"></script>
-    <script src="assets/js/lib/datamap/datamaps.world.min.js"></script>
-    <script src="assets/js/lib/datamap/datamap-init.js"></script>
+    <script src="../assets/js/lib/datamap/d3.min.js"></script>
+    <script src="../assets/js/lib/datamap/topojson.js"></script>
+    <script src="../assets/js/lib/datamap/datamaps.world.min.js"></script>
+    <script src="../assets/js/lib/datamap/datamap-init.js"></script>
     <!-- scripit init-->
-    <script src="assets/js/lib/owl-carousel/owl.carousel.min.js"></script>
-    <script src="assets/js/lib/owl-carousel/owl.carousel-init.js"></script>
+    <script src="../assets/js/lib/owl-carousel/owl.carousel.min.js"></script>
+    <script src="../assets/js/lib/owl-carousel/owl.carousel-init.js"></script>
 
-    <script src="assets/js/lib/morris-chart/raphael-min.js"></script>
-    <script src="assets/js/lib/morris-chart/morris.js"></script>
-    <script src="assets/js/lib/morris-chart/morris-init.js"></script>
+    <script src="../assets/js/lib/morris-chart/raphael-min.js"></script>
+    <script src="../assets/js/lib/morris-chart/morris.js"></script>
+    <script src="../assets/js/lib/morris-chart/morris-init.js"></script>
 
-    <script src="assets/js/scripts.js"></script>
+    <script src="../assets/js/scripts.js"></script>
 </body>
 </html>

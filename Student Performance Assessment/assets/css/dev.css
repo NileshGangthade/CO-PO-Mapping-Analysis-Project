@@ -97,6 +97,7 @@ header, nav, section, article, aside, footer, hgroup {
 
 html, body {
   font-family: Times New Roman, Times, serif;
+  /* font-size: 20px; */
   font-weight: 500;
   background-color: #fff;
   -ms-text-size-adjust: 100%;
@@ -441,7 +442,7 @@ header
 }
 
 .header-area .main-nav .nav li.submenu:after {
-  font-family: FontAwesome;
+  font-family: Times New Roman, Times, serif;
   content: "\f107";
   font-size: 12px;
   color: #2a2a2a;

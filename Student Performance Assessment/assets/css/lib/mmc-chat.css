@@ -606,7 +606,7 @@
 #mmc-chat .chat-box ul.boxs li.box .box-header .info span.box-username a {
     color: #fff;
     font-size: 12px;
-    font-family: 'MontserratLight', sans-serif;
+    font-family: Times New Roman, Times, serif;
 }
 
 #mmc-chat .chat-box ul.boxs li.box .box-header .info span.box-username a:hover {

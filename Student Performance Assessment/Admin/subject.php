@@ -1,10 +1,10 @@
 <?php
 session_start();
 error_reporting(0);
-include('dbconnection.php');
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-  header("Location: login.html");
-  exit();
+include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
+    header("Location: login.html");
+    exit();
 }else{
      if(isset($_POST['submit']))
    {
@@ -66,12 +66,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
 
   <!-- subject css -->
          <!-- Styles -->
-         <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
-    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
-    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/lib/unix.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -225,15 +225,15 @@ foreach($results as $row)
 
   <!-- scripts for subject-->
  <!-- jquery vendor -->
- <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+ <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
     <!-- nano scroller -->
-    <script src="assets/js/lib/menubar/sidebar.js"></script>
-    <script src="assets/js/lib/preloader/pace.min.js"></script>
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/preloader/pace.min.js"></script>
     <!-- sidebar -->
-    <script src="assets/js/lib/bootstrap.min.js"></script>
+    <script src="../assets/js/lib/bootstrap.min.js"></script>
     <!-- bootstrap -->
-    <script src="assets/js/scripts.js"></script>
+    <script src="../assets/js/scripts.js"></script>
 </body>
 </html>
 <?php }  ?>

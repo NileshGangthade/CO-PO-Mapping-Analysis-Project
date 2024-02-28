@@ -21,43 +21,43 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/dev.css">
-    <link rel="stylesheet" href="assets/css/animated.css">
+    <link rel="stylesheet" href="../assets/css/dev.css">
+    <link rel="stylesheet" href="../assets/css/animated.css">
 
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" type="text/css" href="../fonts/iconic/css/material-design-iconic-font.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/animate/animate.css">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/css-hamburgers/hamburgers.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/animsition/css/animsition.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/select2/select2.min.css">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/daterangepicker/daterangepicker.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="assets/css/util.css">
-	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/util.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/main.css">
      <!--===============================================================================================-->
      <!-- change password -->
 
     <!-- Styles -->
-    <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
-    <link href="assets/css/lib/datatable/dataTables.bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/lib/datatable/buttons.bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
-    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/lib/unix.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/datatable/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/lib/datatable/buttons.bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -114,37 +114,37 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
 
 	
 <!--===============================================================================================-->
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="../vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
+	<script src="../vendor/animsition/js/animsition.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../vendor/bootstrap/js/popper.js"></script>
+	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
+	<script src="../vendor/select2/select2.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+	<script src="../vendor/daterangepicker/moment.min.js"></script>
+	<script src="../vendor/daterangepicker/daterangepicker.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/countdowntime/countdowntime.js"></script>
+	<script src="../vendor/countdowntime/countdowntime.js"></script>
 <!--===============================================================================================-->
-	<script src="assets/js/main.js"></script>
+	<script src="../assets/js/main.js"></script>
 
      <!-- change password scripts-->
 
      <!-- scripts for search-->
  <!-- jquery vendor -->
- <script src="assets/js/lib/bootstrap.min.js"></script>
+ <script src="../assets/js/lib/bootstrap.min.js"></script>
     <!-- bootstrap -->
-    <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+    <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
     <!-- nano scroller -->
-    <script src="assets/js/lib/menubar/sidebar.js"></script>
-    <script src="assets/js/lib/preloader/pace.min.js"></script>
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/preloader/pace.min.js"></script>
     <!-- sidebar -->
-    <script src="assets/js/lib/data-table/datatables.min.js"></script>
-    <script src="assets/js/lib/data-table/datatables-init.js"></script>
-    <script src="assets/js/scripts.js"></script>
+    <script src="../assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="../assets/js/lib/data-table/datatables-init.js"></script>
+    <script src="../assets/js/scripts.js"></script>
 
     <script>
      function validatePassword() {

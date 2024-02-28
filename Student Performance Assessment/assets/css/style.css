@@ -12,6 +12,7 @@
     src: url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(../fonts/glyphicons-halflings-regular.woff) format('woff'), url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'), url(../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular) format('svg')
 }
 
+
 .icon-name {
     color: #000
 }
@@ -33,7 +34,7 @@
 }
 
 .card-header p {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     margin-bottom: 12px
 }
 
@@ -484,7 +485,7 @@ div.dt-button:active:not(.disabled) {
 }
 
 .panel-body {
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .panel-primary {
@@ -830,7 +831,7 @@ div.dt-button:active:not(.disabled) {
 
 .dropdown-content-heading span {
     font-size: 13px;
-    font-family: Montserrat, sans-serif;
+    font-family: Times New Roman, Times, serif;
     color: #252525
 }
 
@@ -884,7 +885,7 @@ div.dt-button:active:not(.disabled) {
 
 .notification-text {
     font-size: 12px;
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -941,7 +942,7 @@ div.dt-button:active:not(.disabled) {
 }
 
 .dropdown-profile li a span {
-    font-family: Montserrat, sans-serif;
+    font-family: Times New Roman, Times, serif;
     font-size: 14px
 }
 
@@ -987,14 +988,14 @@ div.dt-button:active:not(.disabled) {
 .main .page-header .breadcrumb li.active,
 .main .page-header .breadcrumb li:focus,
 .main .page-header .breadcrumb li:hover {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     font-weight: 400;
     font-size: 12px
 }
 
 .main .page-header .breadcrumb li a {
     font-size: 12px;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .dropdown-task .progress {
@@ -1036,7 +1037,7 @@ div.dt-button:active:not(.disabled) {
 .chat-sidebar .seen,
 .chat-sidebar .textarea,
 .chat-sidebar .user-name {
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .chat-sidebar.is-active {
@@ -1244,7 +1245,7 @@ div.dt-button:active:not(.disabled) {
 }
 
 .testimonial-widget-one .testimonial-author-position {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     margin-right: 75px;
     position: relative;
     top: -5px
@@ -2055,7 +2056,7 @@ footer p {
 .recent-comment .comment-date {
     float: left;
     color: #252525;
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     font-size: 12px
 }
 
@@ -2065,7 +2066,7 @@ footer p {
 
 .comment-action .badge {
     text-transform: uppercase;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .comment-action i {
@@ -2120,7 +2121,7 @@ footer p {
     border-radius: 0;
     box-shadow: none;
     border-color: #000;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .form-control:hover {
@@ -2451,7 +2452,7 @@ ul.inbox-nav li a {
     line-height: 45px;
     padding: 0 20px;
     width: 100%;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 ul.inbox-nav li a:focus,
@@ -2495,7 +2496,7 @@ ul.labels-info li h4 {
 ul.labels-info li a {
     border-radius: 0;
     color: #6a6a6a;
-    font-family: MontserratLight, sans-serif
+     MontserratLight, sans-serif
 }
 
 ul.labels-info li a:focus,
@@ -2615,7 +2616,7 @@ ul.inbox-pagination li {
     background: #fff;
     border: 1px solid #e7e7e7;
     border-radius: 3px!important;
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     color: #252525;
     display: inline-block;
     padding: 5px 10px;
@@ -2859,7 +2860,7 @@ ul {
 
 .tdl-holder li span {
     margin-left: 30px;
-    font-family: MontserratLight, sans-serif;
+     MontserratLight, sans-serif;
     vertical-align: middle;
     -webkit-transition: all .2s linear;
     -moz-transition: all .2s linear;
@@ -2922,7 +2923,7 @@ ul {
 
 .tdl-holder input[type=checkbox]:checked+i::after {
     content: "\e64c";
-    font-family: themify;
+    font-family: Times New Roman, Times, serif;
     display: block;
     left: 0;
     position: absolute;
@@ -2943,7 +2944,7 @@ ul {
 
 .datamap-sales-hover-tooltip {
     background: #545454;
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     padding: 5px 10px;
     color: #fff;
     font-weight: 400;
@@ -2963,12 +2964,12 @@ thead tr th:last-child {
 
 tbody tr th {
     color: #252525;
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     font-weight: 400
 }
 
 tbody tr td {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     color: #252525
 }
 
@@ -3182,7 +3183,7 @@ tbody tr td:last-child {
     margin-bottom: 15px;
     padding: 5px 0;
     border-bottom: 1px solid #e7e7e7;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .work-content {
@@ -3209,7 +3210,7 @@ tbody tr td:last-child {
     display: inline-block;
     font-size: 12px;
     margin-left: 10px;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .user-Location i {
@@ -3265,7 +3266,7 @@ tbody tr td:last-child {
     text-transform: uppercase;
     padding-top: 10px;
     padding-bottom: 15px;
-    font-family: MontserratLight, sans-serif
+    font-family: Times New Roman, Times, serif;
 }
 
 .contact-title {
@@ -3283,7 +3284,7 @@ tbody tr td:last-child {
 .gender,
 .mail-address,
 .phone-number {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     font-size: 16px;
     color: #252525
 }
@@ -3495,7 +3496,7 @@ tbody tr td:last-child {
 }
 
 .fc-text-arrow {
-    font-family: inherit;
+    font-family: Times New Roman, Times, serif;
     font-size: 16px
 }
 
@@ -4088,7 +4089,7 @@ tbody tr td:last-child {
 }
 
 body {
-    font-family: "Times New Roman", Times, serif;
+    font-family: Times New Roman, Times, serif;
     background: #eef1f6;
     color: #252525
 }
@@ -4122,7 +4123,7 @@ li {
 }
 
 p {
-    font-family: MontserratLight, sans-serif;
+    font-family: Times New Roman, Times, serif;
     color: #252525
 }
 

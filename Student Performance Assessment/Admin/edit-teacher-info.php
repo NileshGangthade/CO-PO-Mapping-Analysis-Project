@@ -1,10 +1,10 @@
 <?php
 session_start();
 error_reporting(0);
-include('dbconnection.php');
-if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-  header("Location: login.html");
-  exit();
+include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
+    header("Location: login.html");
+    exit();
 } else {
      if(isset($_POST['submit']))
    {
@@ -12,27 +12,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
  $lname=$_POST['lname'];
  $mobnum=$_POST['mobnum'];
  $email=$_POST['email'];
- $gender=$_POST['gender'];
  $dob=$_POST['dob'];
  $cid=$_POST['cid'];
- $religion=$_POST['religion'];
- $address=$_POST['address'];
+ $user_role = $_POST['user_role'];
  $password=md5($_POST['password']);
  
  
  $eid=$_GET['editid'];
- $sql="update tblteacher set FirstName=:fname,LastName=:lname,MobileNumber=:mobnum,Email=:email,Gender=:gender,Dob=:dob,CourseID=:cid,Religion=:religion,Address=:address where tblteacher.ID=:eid";
+ $sql = "UPDATE teachers_data SET FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
  $query=$dbh->prepare($sql);
  
  $query->bindParam(':fname',$fname,PDO::PARAM_STR);
  $query->bindParam(':lname',$lname,PDO::PARAM_STR);
  $query->bindParam(':mobnum',$mobnum,PDO::PARAM_STR);
  $query->bindParam(':email',$email,PDO::PARAM_STR);
- $query->bindParam(':gender',$gender,PDO::PARAM_STR);
  $query->bindParam(':dob',$dob,PDO::PARAM_STR);
  $query->bindParam(':cid',$cid,PDO::PARAM_STR);
- $query->bindParam(':religion',$religion,PDO::PARAM_STR);
- $query->bindParam(':address',$address,PDO::PARAM_STR);
+ $query->bindParam(':user_role',$user_role,PDO::PARAM_STR);
  $query->bindParam(':eid',$eid,PDO::PARAM_STR);
   $query->execute();
  
@@ -59,13 +55,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
   
 
   <!-- teacher info update css -->
-  <link href="assets/css/lib/calendar2/pignose.calendar.min.css" rel="stylesheet">
-    <link href="assets/css/lib/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
-    <link href="assets/css/lib/menubar/sidebar.css" rel="stylesheet">
-    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/lib/unix.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/lib/calendar2/pignose.calendar.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
@@ -104,18 +100,17 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
                     <div class="card alert">
                         <div class="card-body">
                             <form name="" method="post" action="" enctype="multipart/form-data">
-                                <?php
-                                    $eid=$_GET['editid'];
-$sql="SELECT tblcourse.ID as cid,tblcourse.BranchName,tblcourse.CourseName,tblteacher.ID,tblteacher.EmpID,tblteacher.FirstName,tblteacher.LastName,tblteacher.MobileNumber,tblteacher.Email,tblteacher.Gender,tblteacher.Dob,tblteacher.CourseID,tblteacher.Religion,tblteacher.Address,tblteacher.Password,tblteacher.ProfilePic,tblteacher.JoiningDate from tblteacher join tblcourse on tblcourse.ID=tblteacher.CourseID where tblteacher.ID=$eid";
-$query = $dbh -> prepare($sql);
+                            <?php
+$eid = $_GET['editid'];
+$sql = "SELECT tblcourse.ID as cid, tblcourse.BranchName, tblcourse.CourseName, teachers_data.ID, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, teachers_data.MobileNumber, teachers_data.Email, teachers_data.Dob, teachers_data.CourseID, teachers_data.ProfilePic, teachers_data.user_role FROM teachers_data JOIN tblcourse ON tblcourse.ID = teachers_data.CourseID WHERE teachers_data.ID = $eid";
+$query = $dbh->prepare($sql);
 $query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+$results = $query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>  
+$cnt = 1;
+if ($query->rowCount() > 0) {
+    foreach ($results as $row) {
+                               ?>  
                             <div class="card-header m-b-20">
                                 <h4>Teacher Information</h4>
                                 <div class="card-header-right-icon">
@@ -126,7 +121,7 @@ foreach($results as $row)
                                                 <li><a href="#"><i class="ti-loop"></i> Update data</a></li>
                                                 <li><a href="#"><i class="ti-menu-alt"></i> Detail log</a></li>
                                                 <li><a href="#"><i class="ti-pulse"></i> Statistics</a></li>
-                                                <li><a href="#"><i class="ti-power-off"></i> Clear ist</a></li>
+                                                <li><a href="#"><i class="ti-power-off"></i> Clear list</a></li>
                                             </ul>
                                         </li>
                                         <li class="doc-link"><a href="#"><i class="ti-link"></i></a></li>
@@ -169,18 +164,7 @@ foreach($results as $row)
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <div class="basic-form">
-                                        <div class="form-group">
-                                            <label>Gender*</label>
-                                            <select class="form-control bg-ash border-none" name="gender" required="true">
-                                                <option value="<?php  echo htmlentities($row->Gender);?>"><?php  echo htmlentities($row->Gender);?></option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-md-3">
                                     <div class="basic-form">
                                         <div class="form-group">
@@ -198,48 +182,61 @@ foreach($results as $row)
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+        <div class="col-md-3">
+            <div class="basic-form">
+                <div class="form-group">
+                    <label>User Role</label>
+                    <select class="form-control border-none input-flat bg-ash" name="user_role" required="true">
+                        <option value="">Select User Role</option>
+                        <option value="Admin" <?php if ($row->user_role == 'Admin') echo 'selected'; ?>>Admin</option>
+                        <option value="Principle" <?php if ($row->user_role == 'Principle') echo 'selected'; ?>>Principle</option>
+                        <option value="HOD" <?php if ($row->user_role == 'HOD') echo 'selected'; ?>>HOD</option>
+                        <option value="Professor" <?php if ($row->user_role == 'Professor') echo 'selected'; ?>>Professor</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+                                   
                                 <div class="col-md-3">
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Course</label>
                                             <select class="form-control border-none input-flat bg-ash" name="cid" required="true">
-            <option value="<?php  echo htmlentities($row->cid);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option>
-            <?php
-$sql="SELECT * from tblcourse";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+                <?php
+                $sql = "SELECT * FROM tblcourse";
+                $query = $dbh->prepare($sql);
+                $query->execute();
+                $results = $query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row1)
-{               ?>
-            <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row1->CourseName);?>(<?php  echo htmlentities($row1->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
-        </select>
+                foreach ($results as $row1) {
+                    if ($row1->ID == $row->CourseID) {
+                        echo '<option value="' . $row1->ID . '" selected>' . $row1->CourseName . '(' . $row1->BranchName . ')</option>';
+                    } else {
+                        echo '<option value="' . $row1->ID . '">' . $row1->CourseName . '(' . $row1->BranchName . ')</option>';
+                    }
+                }
+                ?>
+            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-12">
                                     <div class="basic-form">
-                                        <div class="form-group">
-                                            <label>Religion</label>
-                                            <input type="text" class="form-control border-none input-flat bg-ash" name="religion" required="true" value="<?php  echo htmlentities($row->Religion);?>">
+                                        <div class="form-group image-type">
+                                            <label> Teacher Photo <span>(150 X 150)</span></label>
+                                            <img src="../assets/ProfilePic/<?php echo $row->ProfilePic;?>" width="100" height="100" value="<?php  echo $row->ProfilePic;?>" alt="Profile Picture">
+<a href="changeimage.php?editid=<?php echo $row->ID;?>"> &nbsp; Edit Image</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="basic-form">
-                                        <div class="form-group">
-                                            <label>Address</label>
-                                            <input type="text"  class="form-control border-none input-flat bg-ash" rows="4" cols="4" required="true" name="address" value="<?php  echo htmlentities($row->Address);?>">
-                                        </div>
-                                    </div>
-                                </div>
-                              
                             </div>
+                           
                            <?php $cnt=$cnt+1;}} ?>
                             <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Update</button>
                             <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="reset">Reset</button>
@@ -265,28 +262,28 @@ foreach($results as $row1)
 
   <!-- scripts for teachers info edit -->
    <!-- jquery vendor -->
-   <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/lib/jquery.nanoscroller.min.js"></script>
+   <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
     <!-- nano scroller -->
-    <script src="assets/js/lib/menubar/sidebar.js"></script>
-    <script src="assets/js/lib/preloader/pace.min.js"></script>
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/preloader/pace.min.js"></script>
     <!-- sidebar -->
-    <script src="assets/js/lib/bootstrap.min.js"></script>
+    <script src="../assets/js/lib/bootstrap.min.js"></script>
     <!-- bootstrap -->
 
 
-    <script src="assets/js/lib/calendar-2/moment.latest.min.js"></script>
+    <script src="../assets/js/lib/calendar-2/moment.latest.min.js"></script>
     <!-- scripit init-->
-    <script src="assets/js/lib/calendar-2/semantic.ui.min.js"></script>
+    <script src="../assets/js/lib/calendar-2/semantic.ui.min.js"></script>
     <!-- scripit init-->
-    <script src="assets/js/lib/calendar-2/prism.min.js"></script>
+    <script src="../assets/js/lib/calendar-2/prism.min.js"></script>
     <!-- scripit init-->
-    <script src="assets/js/lib/calendar-2/pignose.calendar.min.js"></script>
+    <script src="../assets/js/lib/calendar-2/pignose.calendar.min.js"></script>
     <!-- scripit init-->
-    <script src="assets/js/lib/calendar-2/pignose.init.js"></script>
+    <script src="../assets/js/lib/calendar-2/pignose.init.js"></script>
     <!-- scripit init-->
 
-    <script src="assets/js/scripts.js"></script>
+    <script src="../assets/js/scripts.js"></script>
 </body>
 </html>
 
