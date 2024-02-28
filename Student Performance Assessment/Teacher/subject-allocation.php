@@ -1,0 +1,329 @@
+<?php
+session_start();
+error_reporting(0);
+include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'Professor') {
+    header("Location: login.html");
+    exit();
+}else{
+     if(isset($_POST['submit']))
+   {
+ 
+ $tsasaid=$_SESSION['tsasaid'];
+ $cid = $_SESSION['Course'];
+  $teachereid=$_POST['teachereid'];
+  $subject=$_POST['subject'];
+  $academic_year = $_POST['academic_year'];
+
+  
+ 
+ $sql="insert into tblsuballocation(CourseID,Teacherempid,Subid,academic_year)values(:cid,:teachereid,:subject, :academic_year)";
+ $query=$dbh->prepare($sql);
+ $query->bindParam(':cid',$cid,PDO::PARAM_STR);
+ $query->bindParam(':teachereid',$teachereid,PDO::PARAM_STR);
+ $query->bindParam(':subject',$subject,PDO::PARAM_STR);
+ $query->bindParam(':academic_year',$academic_year,PDO::PARAM_STR);
+
+  $query->execute();
+ 
+    $LastInsertId=$dbh->lastInsertId();
+    if ($LastInsertId>0) {
+     echo '<script>alert("Subject allocation has been done.")</script>';
+ echo "<script>window.location.href ='subject-allocation.php'</script>";
+   }
+   else
+     {
+          echo '<script>alert("Something Went Wrong. Please try again")</script>';
+     }
+ 
+   
+ }
+ // Code for deleting product from cart
+ if(isset($_GET['delid']))
+ {
+ $rid=intval($_GET['delid']);
+ $sql="delete from tblsuballocation where ID=:rid";
+ $query=$dbh->prepare($sql);
+ $query->bindParam(':rid',$rid,PDO::PARAM_STR);
+ $query->execute();
+  echo "<script>alert('Data deleted');</script>"; 
+   echo "<script>window.location.href = 'subject-allocation.php'</script>";     
+ 
+ 
+ }
+ 
+ ?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <title>Subject Allocation</title>
+  
+
+  <!-- subject allocation css -->
+         <!-- Styles -->
+    <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/lib/menubar/sidebar.css" rel="stylesheet">
+    <link href="../assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/lib/unix.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+
+    <script>
+          function getteacher(val) {
+          $.ajax({
+        //   type: "POST",
+          url: "get_teacher.php",
+          data:'courseid='+val,
+          success: function(data){
+          $("#teachereid").html(data);
+          }
+          });
+
+          $.ajax({
+               type: "POST",
+               url: "get_teacher.php",
+               data:'cid='+val,
+               success: function(data){
+               $("#subject").html(data); 
+               }
+               });
+
+
+          }
+     </script>
+
+</head>
+<body>
+
+<?php include_once('sidebar.php');?>
+<?php include_once('header.php');?>
+
+      <!-- Subject allocation-->
+      <div class="content-wrap">
+        <div class="main">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 p-r-0 title-margin-right">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <h1>Subject Allocation</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-4 p-l-0 title-margin-left">
+                        <div class="page-header">
+                            <div class="page-title">
+                                <ol class="breadcrumb text-right">
+                                    <li><a href="teacher_frontend.php">Dashboard</a></li>
+                                    <li class="active">Subject Allocation</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                </div>
+                <!-- /# row -->
+                <div id="main-content">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card alert">
+                                <div class="card-header pr">
+                                    <h4>Subject Allocation</h4>
+                                    <form method="post" name="hjhgh">
+
+                                    <div class="form-group">
+                                            <label>Academic Year</label>
+                                            <input type="text" class="form-control border-none input-flat bg-ash" name="academic_year" id="academic_year" placeholder="2023-24" required="true">
+                                    </div>
+
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Course</label>
+    <select class="form-control border-none input-flat bg-ash" name="cid" id="cid"  required="true">
+            <!-- <option value="">Select Course</option> -->
+            <?php
+                $courseId = $_SESSION['Course'];
+
+                $sql="SELECT * from tblcourse WHERE ID = $courseId";
+                $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $row)
+                {               
+            ?>
+            <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
+    </select>
+        
+                                            </div>
+                                        </div>
+<div class="basic-form m-t-20">
+ <div class="form-group">
+ <div class="basic-form m-t-20">
+    <div class="form-group">
+    <label>Teacher</label>
+<select class="form-control border-none input-flat bg-ash" name="teachereid" id="teachereid" required="true">
+<option value="">Select Teacher</option>
+    <?php
+    // Fetch teachers based on the selected course
+    // $courseId = $_SESSION['Course'];
+    $sql ="SELECT * FROM teachers_data WHERE CourseID=$courseId";
+    $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $row)
+                {               
+            ?>
+    <option value="<?php echo htmlentities($row->EmpID); ?>"><?php echo htmlentities($row->FirstName); ?> <?php echo htmlentities($row->LastName); ?>(<?php echo htmlentities($row->EmpID); ?>)</option><?php $cnt=$cnt+1;}} ?>
+</select>
+
+    </div>
+</div>
+
+</div>
+</div>
+
+
+<div class="basic-form m-t-20">
+    <div class="form-group">
+        <label>Subject</label>
+        <select class="form-control border-none input-flat bg-ash" name="subject" id="subject" required="true">
+        <option value="">Select Subject</option>
+            <?php
+            // Fetch subjects based on the selected course
+            //  $cid =$_SESSION['Course'];
+            
+            $sql ="SELECT * FROM tblsubject WHERE CourseID=$courseId";
+            $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $rows)
+                {               
+            ?>
+            <option value="<?php echo htmlentities($rows->ID); ?>"><?php echo htmlentities($rows->SubjectFullname); ?>(<?php echo htmlentities($rows->SubjectShortname); ?>)</option><?php $cnt=$cnt+1;}} ?>
+        </select>
+    </div>
+</div>
+
+
+                                        
+                                       
+                                   
+                                </div>
+                                <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Save</button>
+                                <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="reset">Reset</button> 
+                            </form>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card alert">
+                                <div class="card-header pr">
+                                    <h4>Subject Allocation Details</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table student-data-table m-t-20">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.No</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Course Name</th>
+                                                    <th>Subject Name</th>
+                                                    <th>Academic Year</th>
+                                                    <th>Allocation Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+$sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.EmpID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid WHERE tblcourse.ID = $courseId";
+$query = $dbh -> prepare($sql);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+
+$cnt=1;
+if($query->rowCount() > 0)
+{
+foreach($results as $row)
+{               ?>
+                                                <tr>
+                                                    <td><?php echo htmlentities($cnt);?></td>
+                                                    <td>
+                                                        <?php  echo htmlentities($row->FirstName);?> <?php  echo htmlentities($row->LastName);?>(<?php  echo htmlentities($row->Teacherempid);?>)
+                                                    </td>
+                                                    <td>
+                                                        <?php  echo htmlentities($row->BranchName);?>(<?php  echo htmlentities($row->CourseName);?>)
+                                                    </td>
+                                                   <td>
+                                                        <?php  echo htmlentities($row->SubjectFullname);?>(<?php  echo htmlentities($row->SubjectCode);?>)
+                                                    </td>
+                                                    <td>
+                                                        <?php  echo htmlentities($row->academic_year);?>
+                                                    </td>
+                                                    <td>
+                                                        <?php  echo htmlentities($row->AllocationDate);?>
+                                                    </td>
+
+                                                
+                                                    <td>
+                                                       
+                                                      
+                                                        <span><a href="subject-allocation.php?delid=<?php echo ($row->suballid);?>"  onclick="return confirm('Do you really want to Delete ?');" class="btn btn-danger">DELETE </a></span>
+                                                    </td>
+                                                </tr>
+                                                 <?php $cnt=$cnt+1;}} ?> 
+                                            
+                                             
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# column -->
+
+                    </div>
+                    <!-- /# row -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+  <!-- scripts for subject allocation-->
+ <!-- jquery vendor -->
+ <script src="../assets/js/lib/jquery.min.js"></script>
+    <script src="../assets/js/lib/jquery.nanoscroller.min.js"></script>
+    <!-- nano scroller -->
+    <script src="../assets/js/lib/menubar/sidebar.js"></script>
+    <script src="../assets/js/lib/preloader/pace.min.js"></script>
+    <!-- sidebar -->
+    <script src="../assets/js/lib/bootstrap.min.js"></script>
+    <!-- bootstrap -->
+    <script src="../assets/js/scripts.js"></script>
+</body>
+</html>
+<?php }  ?>

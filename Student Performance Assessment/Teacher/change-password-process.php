@@ -2,11 +2,10 @@
 session_start();
 require '../dbconnection.php';
 
-if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
+if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
-}
-else {
+} else {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $old_password = $_POST["old_password"];
         $new_password = $_POST["new_password"];
@@ -43,7 +42,7 @@ else {
                 ?>
                 <script>
                     alert("Password updated successfully.");
-                    window.location.href = 'admin_frontend.php';
+                    window.location.href = 'teacher_frontend.php';
                 </script>
                 <?php
             } else {

@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header("Location: HOD/HOD_frontend.php");
                 exit();
             } elseif ($row['user_role'] == 'Professor') {
-                header("Location: Professor/Professor_frontend.php");
+                header("Location: Teacher/Teacher_frontend.php");
                 exit();
             } else {
                 header("Location: dashboard.php");

@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('../dbconnection.php');
-if ($_SESSION['user_role'] != 'HOD') {
+if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
 }else{
@@ -78,7 +78,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                         <div class="page-header">
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
-                                    <li><a href="hod_frontend.php">Dashboard</a></li>
+                                    <li><a href="teacher_frontend.php">Dashboard</a></li>
                                     <li class="active">Subject</li>
                                 </ol>
                             </div>
