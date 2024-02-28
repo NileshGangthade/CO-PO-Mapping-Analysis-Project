@@ -10,7 +10,7 @@ if ($_SESSION['user_role'] != 'HOD') {
    {
  
  $tsasaid=$_SESSION['tsasaid'];
-  $cid=$_POST['cid'];
+ $cid = $_SESSION['Course'];
   $teachereid=$_POST['teachereid'];
   $subject=$_POST['subject'];
   $academic_year = $_POST['academic_year'];
@@ -79,7 +79,7 @@ if ($_SESSION['user_role'] != 'HOD') {
     <script>
           function getteacher(val) {
           $.ajax({
-          type: "POST",
+        //   type: "POST",
           url: "get_teacher.php",
           data:'courseid='+val,
           success: function(data){
@@ -148,40 +148,83 @@ if ($_SESSION['user_role'] != 'HOD') {
                                         <div class="basic-form m-t-20">
                                             <div class="form-group">
                                                 <label>Course</label>
-  <select class="form-control border-none input-flat bg-ash" name="cid" id="cid" onChange="getteacher(this.value);" required="true">
-            <option value="">Select Course</option>
+    <select class="form-control border-none input-flat bg-ash" name="cid" id="cid"  required="true">
+            <!-- <option value="">Select Course</option> -->
             <?php
-$sql="SELECT * from tblcourse";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+                $courseId = $_SESSION['Course'];
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>
+                $sql="SELECT * from tblcourse WHERE ID = $courseId";
+                $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $row)
+                {               
+            ?>
             <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
-        </select>
+    </select>
         
                                             </div>
                                         </div>
 <div class="basic-form m-t-20">
  <div class="form-group">
- <label>Teacher</label>
+ <div class="basic-form m-t-20">
+    <div class="form-group">
+    <label>Teacher</label>
 <select class="form-control border-none input-flat bg-ash" name="teachereid" id="teachereid" required="true">
+<option value="">Select Teacher</option>
+    <?php
+    // Fetch teachers based on the selected course
+    // $courseId = $_SESSION['Course'];
+    $sql ="SELECT * FROM teachers_data WHERE CourseID=$courseId";
+    $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $row)
+                {               
+            ?>
+    <option value="<?php echo htmlentities($row->EmpID); ?>"><?php echo htmlentities($row->FirstName); ?> <?php echo htmlentities($row->LastName); ?>(<?php echo htmlentities($row->EmpID); ?>)</option><?php $cnt=$cnt+1;}} ?>
 </select>
+
+    </div>
+</div>
+
 </div>
 </div>
 
 
 <div class="basic-form m-t-20">
- <div class="form-group">
- <label>Subject</label>
-<select class="form-control border-none input-flat bg-ash" name="subject" id="subject" required="true">
-</select>
+    <div class="form-group">
+        <label>Subject</label>
+        <select class="form-control border-none input-flat bg-ash" name="subject" id="subject" required="true">
+        <option value="">Select Subject</option>
+            <?php
+            // Fetch subjects based on the selected course
+            //  $cid =$_SESSION['Course'];
+            
+            $sql ="SELECT * FROM tblsubject WHERE CourseID=$courseId";
+            $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
+
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $rows)
+                {               
+            ?>
+            <option value="<?php echo htmlentities($rows->ID); ?>"><?php echo htmlentities($rows->SubjectFullname); ?>(<?php echo htmlentities($rows->SubjectShortname); ?>)</option><?php $cnt=$cnt+1;}} ?>
+        </select>
+    </div>
 </div>
-</div>
+
 
                                         
                                        
@@ -213,7 +256,7 @@ foreach($results as $row)
                                             </thead>
                                             <tbody>
                                                 <?php
-$sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.EmpID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid";
+$sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.EmpID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid WHERE tblcourse.ID = $courseId";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);

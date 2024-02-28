@@ -10,7 +10,7 @@ if ($_SESSION['user_role'] != 'HOD') {
    {
  
  $ocasaid=$_SESSION['tsasaid'];
-  $cid=$_POST['cid'];
+ $cid = $_SESSION['Course'];
   $sfname=$_POST['sfname'];
   $ssname=$_POST['ssname'];
   $subcode=$_POST['subcode'];
@@ -115,18 +115,19 @@ if ($_SESSION['user_role'] != 'HOD') {
                                             <div class="form-group">
                                                 <label>Course Name</label>
         <select class="form-control border-none input-flat bg-ash" name="cid" required="true">
-            <option value="">Select Course</option>
+            <!-- <option value="">Select Course</option> -->
             <?php
-$sql="SELECT * from tblcourse";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+                $courseId = $_SESSION['Course'];
+                $sql="SELECT * from tblcourse WHERE ID = $courseId";
+                $query = $dbh -> prepare($sql);
+                $query->execute();
+                $results=$query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>
+                $cnt=1;
+                if($query->rowCount() > 0)
+                {
+                foreach($results as $row)
+                {               ?>
             <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
         </select>
                                             </div>
@@ -177,7 +178,7 @@ foreach($results as $row)
                                             </thead>
                                             <tbody>
                                                 <?php
-$sql="SELECT tblcourse.CourseName,tblcourse.BranchName,tblcourse.ID as cid,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode, tblsubject.ID as sid from tblsubject join tblcourse on tblcourse.ID=tblsubject.CourseID";
+$sql="SELECT tblcourse.CourseName,tblcourse.BranchName,tblcourse.ID as cid,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode, tblsubject.ID as sid from tblsubject join tblcourse on tblcourse.ID=tblsubject.CourseID WHERE tblcourse.ID = $courseId";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);

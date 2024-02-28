@@ -101,9 +101,10 @@ $query->execute();
                                         </thead>
                                         <tbody>
                                         <?php
+                                        $courseId = $_SESSION['Course'];
 $sql = "SELECT td.ID, td.EmpID, td.FirstName, td.LastName, td.MobileNumber, td.Email, td.user_role, tc.CourseName, tc.BranchName
         FROM teachers_data as td  
-        INNER JOIN tblcourse as tc ON td.CourseID = tc.ID";
+        INNER JOIN tblcourse as tc ON td.CourseID = tc.ID WHERE tc.ID = $courseId";
 $query = $dbh->query($sql);
 $cnt = 1;
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

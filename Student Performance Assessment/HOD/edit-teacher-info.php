@@ -191,9 +191,7 @@ if ($query->rowCount() > 0) {
                     <label>User Role</label>
                     <select class="form-control border-none input-flat bg-ash" name="user_role" required="true">
                         <option value="">Select User Role</option>
-                        <option value="Admin" <?php if ($row->user_role == 'Admin') echo 'selected'; ?>>Admin</option>
-                        <option value="Principal" <?php if ($row->user_role == 'Principal') echo 'selected'; ?>>Principal</option>
-                        <option value="HOD" <?php if ($row->user_role == 'HOD') echo 'selected'; ?>>HOD</option>
+                         <option value="HOD" <?php if ($row->user_role == 'HOD') echo 'selected'; ?>>HOD</option>
                         <option value="Professor" <?php if ($row->user_role == 'Professor') echo 'selected'; ?>>Professor</option>
                     </select>
                 </div>
@@ -207,7 +205,8 @@ if ($query->rowCount() > 0) {
                                             <label>Course</label>
                                             <select class="form-control border-none input-flat bg-ash" name="cid" required="true">
                 <?php
-                $sql = "SELECT * FROM tblcourse";
+                $courseId = $_SESSION['Course'];
+                $sql = "SELECT * FROM tblcourse WHERE ID = $courseId";
                 $query = $dbh->prepare($sql);
                 $query->execute();
                 $results = $query->fetchAll(PDO::FETCH_OBJ);

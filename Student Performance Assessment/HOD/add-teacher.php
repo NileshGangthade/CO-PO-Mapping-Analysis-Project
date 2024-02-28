@@ -19,7 +19,7 @@ else{
  $email = $_POST['email'];
  $empid = $_POST['empid'];
  $dob = $_POST['dob'];
- $cid = $_POST['cid'];
+ $cid = $_SESSION['Course'];
  $user_role = $_POST['user_role'];
 
  // Generating password
@@ -231,8 +231,7 @@ $query=$dbh->prepare($sql);
                                             <label>User Role</label>
                                             <select class="form-control border-none input-flat bg-ash" name="user_role" required="true">
                                                 <option value="">Select Role</option>
-                                                <option value="Admin">Admin</option>
-                                                <option value="Principal">Principal</option>
+        
                                                 <option value="HOD">HOD</option>
                                                 <option value="Professor">Professor</option>
                                             </select>
@@ -244,20 +243,21 @@ $query=$dbh->prepare($sql);
                                         <div class="form-group">
                                             <label>Course</label>
                                             <select class="form-control border-none input-flat bg-ash" name="cid" required="true">
-            <option value="">Select Course</option>
-            <?php
-$sql="SELECT * from tblcourse";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
+                                                <!-- <option value="">Select Course</option> -->
+                                                <?php
+                                                $courseId = $_SESSION['Course'];
+                                                $sql="SELECT * from tblcourse WHERE ID = $courseId";
+                                                $query = $dbh -> prepare($sql);
+                                                $query->execute();
+                                                $results=$query->fetchAll(PDO::FETCH_OBJ);
 
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>
-            <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
-        </select>
+                                                $cnt=1;
+                                                if($query->rowCount() > 0)
+                                                {
+                                                foreach($results as $row)
+                                                {               ?>
+                                                            <option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)</option><?php $cnt=$cnt+1;}} ?>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

@@ -5,7 +5,6 @@
 
                     <li class="label">Main</li>
                     <li><a href="hod_frontend.php" ><i class="ti-home"></i>Dashboard</a></li>
-                   <li><a href="course.php"><i class="ti-files"></i>Course</a>
                     </li>
                      <li><a href="subject.php"><i class="ti-files"></i>Subject</a>
                     </li>

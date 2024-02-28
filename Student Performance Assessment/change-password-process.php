@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $user_id = $_SESSION["user_id"];
+    $user_id =$_SESSION["user_id"];
     $sql = "SELECT * FROM main_table WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $user_id);

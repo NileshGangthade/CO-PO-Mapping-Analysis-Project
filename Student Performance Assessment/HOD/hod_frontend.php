@@ -63,28 +63,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                 </div><!-- /# row -->
                 <div id="main-content">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="media">
-                                    <div class="media-left meida media-middle">
-                                        <span><i class="ti-file f-s-22 color-primary border-primary round-widget"></i></span>
-                                    </div>
-                                    <div class="media-body media-text-right">
-                                        <?php 
                         
-                                          $sql1 ="SELECT * from  tblcourse";
-                                          $query1 = $dbh -> prepare($sql1);
-                                          $query1->execute();
-                                          $results1=$query1->fetchAll(PDO::FETCH_OBJ);
-                                          $totcourse=$query1->rowCount();
-                                        ?>
-                                        <h4 style="color: blue">Total Course</h4>
-                                        <h4 style="color: blue"><?php echo htmlentities($totcourse);?></h4>
-                                        <a href="course.php"><h5>View Detail</h5></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="media">

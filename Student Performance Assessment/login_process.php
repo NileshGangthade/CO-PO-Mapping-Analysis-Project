@@ -16,11 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($row) {
         if (password_verify($password, $row['Password'])) { // Assuming you stored hashed password in ProfilePic
+            $_SESSION['ID'] = $row['ID'];
             $_SESSION['EmpID'] = $row['EmpID'];
             $_SESSION['email'] = $row['Email'];
             $_SESSION['fname'] = $row['FirstName'];
             $_SESSION['lname'] = $row['LastName'];
             $_SESSION['user_role'] = $row['user_role'];
+            $_SESSION['Course'] = $row['Course'];
+
 
             if ($row['user_role'] == 'Admin' || $row['user_role'] == 'Principal') {
                 header("Location: Admin/admin_frontend.php");
