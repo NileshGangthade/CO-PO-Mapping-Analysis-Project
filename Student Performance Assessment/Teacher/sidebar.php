@@ -12,18 +12,10 @@
 
                  
                     <li class="label">Apps</li>
-                    <li><a class="sidebar-sub-toggle"><i class="ti-user"></i>  Teacher  <span class="sidebar-collapse-icon ti-angle-down"></span></a>
-                        <ul>
-                             <li><a href="add-teacher.php">Add Teacher</a>
-                    </li>
-                            <li><a href="manage-teacher.php">Manage Teacher</a></li>
-                           
-                        </ul>
-                    </li>
+                    
                       <li><a href="subject-allocation.php"><i class="ti-files"></i>Subject Allocation</a>
                     </li>
                    
-                  <li><a href="search.php" ><i class="ti-search"></i>Search</a></li>
                 </ul>
             </div>
         </div>

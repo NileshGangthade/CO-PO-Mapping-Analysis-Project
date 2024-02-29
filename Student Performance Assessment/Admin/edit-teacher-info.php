@@ -19,21 +19,51 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
  
  
  $eid=$_GET['editid'];
- $sql = "UPDATE teachers_data SET FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
- $query=$dbh->prepare($sql);
+ try {
+    // Start a transaction
+    $dbh->beginTransaction();
+
+    // Update the first table
+    $sql1 = "UPDATE teachers_data SET FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
+    $query1 = $dbh->prepare($sql1);
+    $query1->bindParam(':fname', $fname, PDO::PARAM_STR);
+    $query1->bindParam(':lname', $lname, PDO::PARAM_STR);
+    $query1->bindParam(':mobnum', $mobnum, PDO::PARAM_STR);
+    $query1->bindParam(':email', $email, PDO::PARAM_STR);
+    $query1->bindParam(':dob', $dob, PDO::PARAM_STR);
+    $query1->bindParam(':cid', $cid, PDO::PARAM_STR);
+    $query1->bindParam(':user_role', $user_role, PDO::PARAM_STR);
+    $query1->bindParam(':eid', $eid, PDO::PARAM_STR);
+    $query1->execute();
+
+    // Update the second table
+    $sql2 = "UPDATE users_login SET FirstName=:fname, LastName=:lname, Email=:email, Course=:cid, user_role=:user_role WHERE users_login.ID=:eid";
+    $query2 = $dbh->prepare($sql2);
+    $query2->bindParam(':fname', $fname, PDO::PARAM_STR);
+    $query2->bindParam(':lname', $lname, PDO::PARAM_STR);
+    $query2->bindParam(':email', $email, PDO::PARAM_STR);
+    $query2->bindParam(':cid', $cid, PDO::PARAM_STR);
+    $query2->bindParam(':user_role', $user_role, PDO::PARAM_STR);
+    $query2->bindParam(':eid', $eid, PDO::PARAM_STR);
+    $query2->execute();
+
+    // If all queries are successful, commit the transaction
+    $dbh->commit();
+
+    echo '<script>alert("Teacher detail has been updated.")</script>';
+     echo "<script>window.location.href = 'manage-teacher.php'</script>";
+    exit();
+} catch (PDOException $e) {
+    // If any error occurs, roll back the transaction
+    $dbh->rollback();
+
+    // Handle the error (e.g., display an error message)
+    echo "Error: " . $e->getMessage();
+    exit();
+}
+
  
- $query->bindParam(':fname',$fname,PDO::PARAM_STR);
- $query->bindParam(':lname',$lname,PDO::PARAM_STR);
- $query->bindParam(':mobnum',$mobnum,PDO::PARAM_STR);
- $query->bindParam(':email',$email,PDO::PARAM_STR);
- $query->bindParam(':dob',$dob,PDO::PARAM_STR);
- $query->bindParam(':cid',$cid,PDO::PARAM_STR);
- $query->bindParam(':user_role',$user_role,PDO::PARAM_STR);
- $query->bindParam(':eid',$eid,PDO::PARAM_STR);
-  $query->execute();
- 
-     echo '<script>alert("Teacher detail has been updated.")</script>';
-     echo "<script>window.location.href = 'manage-teacher.php'</script>"; 
+      
  
    
   
@@ -151,7 +181,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Mobile Number</label>
-                                            <input type="text" class="form-control border-none input-flat bg-ash" name="mobnum" maxlength="10" pattern="[0-9]+" readonly="true" value="<?php  echo htmlentities($row->MobileNumber);?>">
+                                            <input type="text" class="form-control border-none input-flat bg-ash" name="mobnum" maxlength="10" pattern="[0-9]+" required="true" value="<?php  echo htmlentities($row->MobileNumber);?>">
                                         </div>
                                     </div>
                                 </div>
@@ -159,7 +189,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control border-none input-flat bg-ash" name="email" readonly="true" value="<?php  echo htmlentities($row->Email);?>">
+                                            <input type="email" class="form-control border-none input-flat bg-ash" name="email" required="true" value="<?php  echo htmlentities($row->Email);?>">
                                         </div>
                                     </div>
                                 </div>
@@ -179,7 +209,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Emp ID</label>
-                                            <input type="text" class="form-control border-none input-flat bg-ash" name="empid" readonly="true" value="<?php  echo htmlentities($row->EmpID);?>">
+                                            <input type="text" class="form-control border-none input-flat bg-ash" name="empid" required="true" value="<?php  echo htmlentities($row->EmpID);?>">
                                         </div>
                                     </div>
                                 </div>

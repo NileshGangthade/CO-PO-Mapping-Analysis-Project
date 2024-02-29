@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('../dbconnection.php');
-if ($_SESSION['user_role'] != 'HOD') {
+if ($_SESSION['user_role'] !='Professor') {
     header("Location: login.html");
     exit();
 } else {
@@ -49,9 +49,10 @@ if ($_SESSION['user_role'] != 'HOD') {
 
     // If all queries are successful, commit the transaction
     $dbh->commit();
+    
 
     echo '<script>alert("Teacher detail has been updated.")</script>';
-     echo "<script>window.location.href = 'manage-teacher.php'</script>";
+     echo "<script>window.location.href = 'profile.php'</script>"; 
     exit();
 } catch (PDOException $e) {
     // If any error occurs, roll back the transaction
@@ -77,7 +78,7 @@ if ($_SESSION['user_role'] != 'HOD') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-  <title>Update Teacher Information</title>
+  <title>Update Profile</title>
   
 
   <!-- teacher info update css -->
@@ -104,7 +105,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Update Teacher Details</h1>
+                                <h1>Update Profile</h1>
                             </div>
                         </div>
                     </div>
@@ -114,7 +115,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
                                     <li><a href="hod_frontend.php">Dashboard</a></li>
-                                    <li class="active">Teacher Information</li>
+                                    <li class="active">Profile</li>
                                 </ol>
                             </div>
                         </div>
@@ -138,7 +139,7 @@ if ($query->rowCount() > 0) {
     foreach ($results as $row) {
                                ?>  
                             <div class="card-header m-b-20">
-                                <h4>Teacher Information</h4>
+                                <h4>Profile</h4>
                                 <div class="card-header-right-icon">
                                     <ul>
                                         <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>

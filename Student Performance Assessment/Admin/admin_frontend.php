@@ -24,7 +24,7 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
   
 
   <!-- Dashboard css -->
-  <link href="Student Performance Assessment/assets/css/lib/chartist/chartist.min.css" rel="stylesheet">
+  <link href="../assets/css/lib/chartist/chartist.min.css" rel="stylesheet">
     <!-- Styles -->
     <link href="../assets/css/lib/owl.carousel.min.css" rel="stylesheet" />
     <link href="../assets/css/lib/font-awesome.min.css" rel="stylesheet">

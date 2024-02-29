@@ -151,7 +151,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Mobile Number</label>
-                                            <input type="text" class="form-control border-none input-flat bg-ash" name="mobnum" maxlength="10" pattern="[0-9]+" readonly="true" value="<?php  echo htmlentities($row->MobileNumber);?>">
+                                            <input type="text" class="form-control border-none input-flat bg-ash" name="mobnum" maxlength="10" pattern="[0-9]+" required="true" value="<?php  echo htmlentities($row->MobileNumber);?>">
                                         </div>
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control border-none input-flat bg-ash" name="email" readonly="true" value="<?php  echo htmlentities($row->Email);?>">
+                                            <input type="email" class="form-control border-none input-flat bg-ash" name="email" required="true" value="<?php  echo htmlentities($row->Email);?>">
                                         </div>
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@ if ($query->rowCount() > 0) {
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Emp ID</label>
-                                            <input type="text" class="form-control border-none input-flat bg-ash" name="empid" readonly="true" value="<?php  echo htmlentities($row->EmpID);?>">
+                                            <input type="text" class="form-control border-none input-flat bg-ash" name="empid" required="true" value="<?php  echo htmlentities($row->EmpID);?>">
                                         </div>
                                     </div>
                                 </div>

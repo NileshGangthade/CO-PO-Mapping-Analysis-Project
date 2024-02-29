@@ -76,29 +76,7 @@ if ($_SESSION['user_role'] != 'HOD') {
     <link href="../assets/css/lib/unix.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 
-    <script>
-          function getteacher(val) {
-          $.ajax({
-        //   type: "POST",
-          url: "get_teacher.php",
-          data:'courseid='+val,
-          success: function(data){
-          $("#teachereid").html(data);
-          }
-          });
 
-          $.ajax({
-               type: "POST",
-               url: "get_teacher.php",
-               data:'cid='+val,
-               success: function(data){
-               $("#subject").html(data); 
-               }
-               });
-
-
-          }
-     </script>
 
 </head>
 <body>

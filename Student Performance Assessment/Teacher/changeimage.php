@@ -23,15 +23,39 @@ else
 $propic=md5($propic).time().$extension;
  move_uploaded_file($_FILES["propic"]["tmp_name"],"../assets/ProfilePic/".$propic);
 
-    $query= "update teachers_data set ProfilePic=:propic where ID=:eid";
-    $query = $dbh->prepare($query);
-     $query->bindParam(':propic',$propic,PDO::PARAM_STR);
-     $query->bindParam(':eid',$eid,PDO::PARAM_STR);
-$query->execute();
+ try {
+    // Start a transaction
+    $dbh->beginTransaction();
 
-echo '<script>alert("Profile pic has been updated")</script>';
-echo "<script>window.location.href = 'manage-teacher.php'</script>"; 
+    // Update the first table
+    $sql1 = "UPDATE teachers_data SET ProfilePic=:propic WHERE ID=:eid";
+    $query1 = $dbh->prepare($sql1);
+    $query1->bindParam(':propic', $propic, PDO::PARAM_STR);
+    $query1->bindParam(':eid', $eid, PDO::PARAM_STR);
+    $query1->execute();
 
+    // Update the second table
+    $sql2 = "UPDATE users_login SET ProfilePic=:propic WHERE ID=:eid";
+    $query2 = $dbh->prepare($sql2);
+    $query2->bindParam(':propic', $propic, PDO::PARAM_STR);
+    $query2->bindParam(':eid', $eid, PDO::PARAM_STR);
+    $query2->execute();
+
+    // If all queries are successful, commit the transaction
+    $dbh->commit();
+
+    // Redirect or show success message
+    echo '<script>alert("Profile pic has been updated")</script>';
+    echo "<script>window.location.href = 'teacher_frontend.php'</script>";
+    exit();
+} catch (PDOException $e) {
+    // If any error occurs, roll back the transaction
+    $dbh->rollback();
+
+    // Handle the error (e.g., display an error message)
+    echo "Error: " . $e->getMessage();
+    exit();
+}
   
 }}
 ?>
