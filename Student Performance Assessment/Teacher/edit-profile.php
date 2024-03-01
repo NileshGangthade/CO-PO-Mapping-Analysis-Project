@@ -114,7 +114,7 @@ if ($_SESSION['user_role'] !='Professor') {
                         <div class="page-header">
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
-                                    <li><a href="hod_frontend.php">Dashboard</a></li>
+                                    <li><a href="teacher_frontend.php">Dashboard</a></li>
                                     <li class="active">Profile</li>
                                 </ol>
                             </div>

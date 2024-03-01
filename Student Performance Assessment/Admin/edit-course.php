@@ -13,12 +13,14 @@ else{
  $tsasaid=$_SESSION['tsasaid'];
   $bname=$_POST['branchname'];
   $cname=$_POST['coursename'];
+  $years=$_POST['years']; // Newly added line
    $eid=$_GET['editid'];
  
- $sql="update tblcourse set BranchName=:branchname,CourseName=:coursename where ID=:eid";
+ $sql="update tblcourse set BranchName=:branchname,CourseName=:coursename, Years=:years where ID=:eid"; // Updated line
  $query=$dbh->prepare($sql);
  $query->bindParam(':branchname',$bname,PDO::PARAM_STR);
  $query->bindParam(':coursename',$cname,PDO::PARAM_STR);
+ $query->bindParam(':years',$years,PDO::PARAM_INT); // Updated line
  $query->bindParam(':eid',$eid,PDO::PARAM_STR);
  
   $query->execute();
@@ -116,6 +118,12 @@ foreach($results as $row)
                                             <div class="form-group">
                                                 <label>Branch Name</label>
                                                 <input type="text" class="form-control border-none input-flat bg-ash" name="branchname" required="true" value="<?php  echo htmlentities($row->BranchName);?>">
+                                            </div>
+                                        </div>
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Years</label>
+                                                <input type="number" class="form-control border-none input-flat bg-ash" placeholder="Number of Years" name="years" required="true" value="<?php  echo htmlentities($row->Years);?>">
                                             </div>
                                         </div>
                                    

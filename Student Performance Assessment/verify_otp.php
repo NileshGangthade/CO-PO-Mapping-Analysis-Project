@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'config.php';
+require 'dbconnection.php';
 
 if (!isset($_SESSION['reset_email'])) {
     header("Location: forgot_password.html");
@@ -22,13 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Combine the OTP digits into a single variable
     $entered_otp = (isset($_POST['otp1']) ? trim($_POST['otp1']) : '') . (isset($_POST['otp2']) ? trim($_POST['otp2']) : '') . (isset($_POST['otp3']) ? trim($_POST['otp3']) : '') . (isset($_POST['otp4']) ? trim($_POST['otp4']) : '') . (isset($_POST['otp5']) ? trim($_POST['otp5']) : '') . (isset($_POST['otp6']) ? trim($_POST['otp6']) : '');
 
-    $stmt = $conn->prepare("SELECT * FROM main_table WHERE email = ? AND otp = ?");
-    $stmt->bind_param("ss", $email, $entered_otp);
+    $sql = "SELECT * FROM users_login WHERE Email = :email AND otp = :otp";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':otp', $entered_otp, PDO::PARAM_STR);
     $stmt->execute();
-    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // $stmt = $conn->prepare("SELECT * FROM main_table WHERE email = ? AND otp = ?");
+    // $stmt->bind_param("ss", $email, $entered_otp);
+    // $stmt->execute();
+    // $result = $stmt->get_result();
+
+    if ($row) {
+        
         header("Location: new_password.html?email=" . urlencode($email) . "&from=verify_otp");
         exit();
     } else {
@@ -40,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php
     }
 
-    $stmt->close();
-    $conn->close();
+    $dbh = null;
 }
 ?>

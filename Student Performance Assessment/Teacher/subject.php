@@ -61,7 +61,7 @@ if ($_SESSION['user_role'] != 'Professor') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-  <title>Subject Create</title>
+  <title>Create Question Paper</title>
   
 
   <!-- subject css -->
@@ -86,7 +86,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Subject</h1>
+                                <h1>Create Question Paper</h1>
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
                                     <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                    <li class="active">Subject</li>
+                                    <li class="active">Create Question Paper</li>
                                 </ol>
                             </div>
                         </div>
@@ -109,12 +109,12 @@ if ($_SESSION['user_role'] != 'Professor') {
                         <div class="col-md-4">
                             <div class="card alert">
                                 <div class="card-header pr">
-                                    <h4>Create A New Subject</h4>
+                                    <h4>Create Question Paper</h4>
                                     <form method="post" name="hjhgh">
                                         <div class="basic-form m-t-20">
                                             <div class="form-group">
                                                 <label>Course Name</label>
-        <select class="form-control border-none input-flat bg-ash" name="cid" required="true">
+        <select class="form-control border-none input-flat bg-ash" name="cid" required="true" readonly>
             <!-- <option value="">Select Course</option> -->
             <?php
                 $courseId = $_SESSION['Course'];
@@ -132,6 +132,38 @@ if ($_SESSION['user_role'] != 'Professor') {
         </select>
                                             </div>
                                         </div>
+
+                                        <div class="basic-form m-t-20">
+                                                    <div class="form-group">
+                                                        <label>Academic Year</label>
+                                                        <input type="text" class="form-control border-none input-flat bg-ash" name="sfname" placeholder="2023_24" required="true" >
+                                                    </div>
+                                        </div>
+
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Year</label>
+                                                <select class="form-control border-none input-flat bg-ash" name="years" required="true">
+                                                    <option value="">Select Year</option>
+                                                    <?php
+                                                    $sql = "SELECT * FROM tblcourse WHERE ID = :courseId";
+                                                    $query = $dbh->prepare($sql);
+                                                    $query->bindParam(':courseId', $courseId, PDO::PARAM_STR);
+                                                    $query->execute();
+                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                    if ($query->rowCount() > 0) {
+                                                        foreach ($results as $row) {
+                                                            $years = $row->Years;
+                                                            for ($i = 1; $i <= $years; $i++) {
+                                                                echo "<option value='$i'>$i</option>";
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="basic-form m-t-20">
                                             <div class="form-group">
                                                 <label>Subject Full Name</label>
@@ -150,8 +182,55 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                 <input type="text" class="form-control border-none input-flat bg-ash" placeholder="Subject Code" name="subcode" required="true">
                                             </div>
                                         </div>
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Division</label>
+                                                <select class="form-control border-none input-flat bg-ash" name="years" required="true">
+                                                    <option value="">Select Division</option>
+                                                    <option value="A">A</option>
+                                                    <option value="B">B</option>
+                                                    <option value="C">C</option>
+                                                    <option value="D">D</option>
+                                                    <option value="E">E</option>
+                                                    <option value="F">F</option>
+                                                    <option value="G">G</option>
+
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Semester</label>
+                                                <select class="form-control border-none input-flat bg-ash" name="years" required="true">
+                                                    <option value="">Select Semester</option>
+                                                    <option value="SEM_I">First Semester</option>
+                                                    <option value="SEM_II">Second Semester</option>
+                                                   
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="basic-form m-t-20">
+                                            <div class="form-group">
+                                                <label>Exam</label>
+                                                <select class="form-control border-none input-flat bg-ash" name="years" required="true">
+                                                       <option value="">Select Exam</option>
+                                                       <option value="UT1">UT1</option>
+                                                       <option value="UT2">UT2</option>
+                                                       <option value="UT3">UT3</option>
+                                                       <option value="Prelim">Prelims</option>
+                                                       <option value="Assign1">Assignment_1</option>
+                                                       <option value="Assign2">Assignment_2</option>
+                                                       <option value="Assign3">Assignment_3</option>
+                                                       <option value="Assign4">Assignment_4</option>
+                                                   
+                                                </select>
+                                            </div>
+                                        </div>
                                 </div>
-                                <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Save</button>
+                                <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Create</button>
                                 <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="reset">Reset</button> 
                             </form>
                             </div>

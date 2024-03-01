@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+require 'dbconnection.php';
 require 'Mail/phpmailer/Exception.php';
 require 'Mail/phpmailer/PHPMailer.php';
 require 'Mail/phpmailer/SMTP.php';
@@ -22,29 +22,40 @@ function generateOTP($length = 6)
 
 if (isset($_POST['submit'])) {
     $email = $_POST['email'];
-    $name = $_POST['name'];
-
-    require 'config.php';
-   
+    
 
     // Check if the email and name exist in the main_table
-    $stmt = $conn->prepare("SELECT * FROM main_table WHERE email = ? AND name = ?");
-    $stmt->bind_param("ss", $email, $name);
+    // $stmt = $conn->prepare("SELECT * FROM users_login WHERE Email = ?");
+    // $stmt->bind_param("ss", $email);
+    // $stmt->execute();
+    // $result = $stmt->get_result();
+
+    $sql = "SELECT * FROM users_login WHERE Email = :email";
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result->num_rows > 0) {
+    if ($row) {
 
-
-        $row = $result->fetch_assoc();
+        
+        
+        $name = $row['FirstName'] . ' ' . $row['LastName'];;
 
         // Generate a 6-digit OTP and store it in the main_table along with a timestamp
         $otp = generateOTP();
         $otp_expiry = date("Y-m-d H:i:s", strtotime('+5 minutes')); // OTP valid for 10 minutes
 
-        $stmt = $conn->prepare("UPDATE main_table SET otp = ?, otp_expiry = ? WHERE email = ?");
-        $stmt->bind_param("sss", $otp, $otp_expiry, $email);
+        $sql = "UPDATE users_login SET otp = :otp, otp_expiry = :otp_expiry WHERE Email = :email";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':otp', $otp, PDO::PARAM_STR);
+        $stmt->bindParam(':otp_expiry', $otp_expiry, PDO::PARAM_STR);
         $stmt->execute();
+
+        // $stmt = $conn->prepare("UPDATE main_table SET otp = ?, otp_expiry = ? WHERE email = ?");
+        // $stmt->bind_param("sss", $otp, $otp_expiry, $email);
+        // $stmt->execute();
 
         $subject = "OTP for Password Reset";
         $message = "Your OTP for password reset is: " . $otp . "\n\nIt will expire in 5 minutes.";
@@ -82,6 +93,7 @@ if (isset($_POST['submit'])) {
             </script>
         <?php
         } catch (Exception $e) {
+            $e->getMessage();
         ?>
             <script>
                 alert("Error sending email");
@@ -98,14 +110,12 @@ if (isset($_POST['submit'])) {
     } else {
         ?>
         <script>
-            alert("Email and name combination not found in our records.");
+            alert("Email not found in our records.");
               window.location.href = "forgot_password.html";
         </script>
 
 <?php
     }
-
-    $stmt->close();
-    $conn->close();
+    $dbh = null;
 }
 ?>

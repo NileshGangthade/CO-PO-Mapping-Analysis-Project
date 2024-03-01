@@ -1,22 +1,29 @@
 <?php
 session_start();
-require 'config.php';
+require 'dbconnection.php';
 
 if (!isset($_SESSION['reset_email'])) {
     header("Location: forgot_password.html");
     exit();
 }
+else{
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_SESSION['reset_email'];
     $new_password = isset($_POST['password']) ? trim($_POST['password']) : '';
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("UPDATE main_table SET password = ?, otp = NULL, otp_expiry = NULL WHERE email = ?");
-    $stmt->bind_param("ss", $hashed_password, $email);
-    $is_updated = $stmt->execute();
+    $sql = "UPDATE users_login SET Password = :password, otp = NULL, otp_expiry = NULL WHERE Email = :email";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        
+        $row = $stmt->execute();
+    // $stmt = $conn->prepare("UPDATE main_table SET password = ?, otp = NULL, otp_expiry = NULL WHERE email = ?");
+    // $stmt->bind_param("ss", $hashed_password, $email);
+    // $is_updated = $stmt->execute();
 
-    if ($is_updated) {
+    if ($row) {
         ?>
             <script>
                 alert("Password updated successfully");
@@ -32,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php
     }
 
-    $stmt->close();
-    $conn->close();
+    $dbh = null;
+
+}
 }
 ?>
