@@ -6,7 +6,7 @@
                     <li class="label">Main</li>
                     <li><a href="teacher_frontend.php" ><i class="ti-home"></i>Dashboard</a></li>
                     </li>
-                     <li><a href="subject.php"><i class="ti-files"></i>Create Question Paper</a>
+                     <li><a href="previous-assessment-details.php"><i class="ti-files"></i>Previous Assessment Details</a>
                     </li>
                     
 

@@ -147,7 +147,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                             <?php echo htmlentities($row->AllocationDate); ?>
                                                         </td>
                                                         <td>
-                                                        <span><a href="create-question-paper.php?subid=<?php echo ($row->subid); ?>&suballid=<?php echo ($row->suballid); ?>" class="btn btn-primary">Create Question Paper </a></span>
+                                                        <span><a href="enroll-in-class.php?subid=<?php echo ($row->subid); ?>&suballid=<?php echo ($row->suballid); ?>" class="btn btn-primary">Enroll in Class </a></span>
                                                         <span><a href="subject-allocation.php?delid=<?php echo ($row->suballid); ?>" onclick="return confirm('Do you really want to Delete ?');" class="btn btn-danger">DELETE </a></span>
                                                         </td>
                                                     </tr>
