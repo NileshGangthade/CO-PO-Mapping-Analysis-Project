@@ -107,7 +107,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                 <div id="main-content">
                     <div class="row">
                         
-                        <div class="col-md-8">
+                        <div class="col-md-8" style="width: 96% ">
                             <div class="card alert">
                                 <div class="card-header pr">
                                     <h4>Previous Assessment Details</h4>
@@ -122,14 +122,38 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                     <th>S.No</th>
                                                     <th>Course Name</th>
                                                     <th>Subject Full Name</th>
-                                                    <th>Subject Short Name</th>
-                                                    <th>Subject Code</th>
+                                                    <th>Academic Year </th>
+                                                    <th>Year</th>
+                                                    <th>Division</th>
+                                                    <th>Semester</th>
+                                                    <th>Exam</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
-$sql="SELECT tblcourse.CourseName,tblcourse.BranchName,tblcourse.ID as cid,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode, tblsubject.ID as sid from tblsubject join tblcourse on tblcourse.ID=tblsubject.CourseID WHERE tblcourse.ID = $courseId";
+$sql = "SELECT 
+ec.ID,
+ec.CourseID,
+ec.SuballocationID,
+c.CourseName,
+c.BranchName,
+ec.SubID,
+ec.Year,
+ec.Division,
+ec.Sem,
+ec.Exam,
+sa.academic_year,
+s.SubjectFullname
+FROM 
+enrolled_classes ec
+INNER JOIN 
+tblcourse c ON ec.CourseID = c.ID
+INNER JOIN 
+tblsuballocation sa ON ec.SuballocationID = sa.ID
+INNER JOIN 
+tblsubject s ON ec.SubID = s.ID";
+
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -140,24 +164,18 @@ if($query->rowCount() > 0)
 foreach($results as $row)
 {               ?>
                                                 <tr>
-                                                    <td><?php echo htmlentities($cnt);?></td>
-                                                    <td>
-                                                        <?php  echo htmlentities($row->CourseName);?>(<?php  echo htmlentities($row->BranchName);?>)
-                                                    </td>
-                                                    <td>
-                                                        <?php  echo htmlentities($row->SubjectFullname);?>
-                                                    </td>
-                                                    <td>
-                                                        <?php  echo htmlentities($row->SubjectShortname);?>
-                                                    </td>
-                                                     <td>
-                                                        <?php  echo htmlentities($row->SubjectCode);?>
-                                                    </td>
-                                                    <td>
-                                                       
+                                                        <td><?php echo htmlentities($cnt);?></td>
+                                                        <td><?php echo htmlentities($row->CourseName ); ?>(<?php echo htmlentities($row->BranchName); ?>)</td>
+                                                        <td><?php echo htmlentities($row->SubjectFullname);?></td>
+                                                        <td><?php echo htmlentities($row->academic_year);?></td>
+                                                        <td><?php echo htmlentities($row->Year);?></td>
+                                                        <td><?php echo htmlentities($row->Division);?></td>
+                                                        <td><?php echo htmlentities($row->Sem);?></td>
+                                                        <td><?php echo htmlentities($row->Exam);?></td>
+                                                       <td>
                                                         <span><a href="edit-subject.php?editid=<?php echo htmlentities ($row->sid);?>"><i class="ti-pencil-alt color-success"></i></a></span>
-                                                        <span><a href="subject.php?delid=<?php echo ($row->sid);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
-                                                    </td>
+                                                        <span><a href="subject.php?delid=<?php echo ($row->ID);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
+                                                       </td>
                                                 </tr>
                                                  <?php $cnt=$cnt+1;}} ?> 
                                             </tbody>

@@ -8,20 +8,24 @@ include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
-} else {
+}
+    
+
+else {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
      $num_main_questions = intval($_POST['num_main_questions']);
 
-     $enrollCID = $_SESSION['enrollCID'];
-     $ssname = $_SESSION['ssname'];
-     $SuballocationID = $_SESSION['SuballocationID'];
+    //  $enrollCID = $_SESSION['enrollCID'];
+    //  $ssname = $_SESSION['ssname'];
+    //  $SuballocationID = $_SESSION['SuballocationID'];
+     
      
         // Construct table name using $ssname and $SuballocationID
-        $tableName = $enrollCID . '_' . $ssname . '_' . $SuballocationID . '_QuestionPaper';
-
+        $AlltableName = $_POST['TableName'];
+        $TableName = $AlltableName . '_' . 'QuestionPaper' ;
         // Create table query
-        $sql = "CREATE TABLE IF NOT EXISTS $tableName (
+        $sql = "CREATE TABLE IF NOT EXISTS $TableName (
           main_question INT NOT NULL,
           sub_question_number INT NOT NULL,
           sub_question VARCHAR(50) NOT NULL,
@@ -46,7 +50,7 @@ if ($_SESSION['user_role'] != 'Professor') {
               $bl = intval($_POST["bl_{$i}_{$j}"]);
 
               // Prepare the SQL statement
-              $sql = "INSERT INTO $tableName (main_question, sub_question_number, sub_question, marks, co, bl) VALUES (:main_question, :sub_question_number, :sub_question, :marks, :co, :bl)";
+              $sql = "INSERT INTO $TableName (main_question, sub_question_number, sub_question, marks, co, bl) VALUES (:main_question, :sub_question_number, :sub_question, :marks, :co, :bl)";
               $query = $dbh->prepare($sql);
               $query->bindParam(':main_question', $i, PDO::PARAM_INT);
               $query->bindParam(':sub_question_number', $j, PDO::PARAM_INT);
@@ -58,7 +62,7 @@ if ($_SESSION['user_role'] != 'Professor') {
               // Execute the SQL statement
               if ($query->execute()) {
                echo '<script>alert("Question Paper created, Now add the students Marks.")</script>';
-               echo "<script>window.location.href ='add-student-mark.php'</script>";
+               echo "<script>window.location.href ='add-student-mark.php?TableName=$AlltableName'</script>";
               } else {
                echo '<script>alert("Unable to add Data into table. Please try again")</script>';
 
@@ -143,11 +147,15 @@ else {
                                 
                                     <h4>Create Question Paper</h4>
                                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                                   <label for="num_main_questions">Number of Main Questions:</label>
-                                   
-                                   <input type="number" id="num_main_questions" name="num_main_questions" min="1" onchange="addMainQuestions()" required><br><br>
-                                   <div id="main_questions_container"></div>
-                                   <button type="submit">Submit</button>                                   </form>
+                                      <label for="num_main_questions">Number of Main Questions:</label>
+                                      <input type="number" id="num_main_questions" name="num_main_questions" min="1" onchange="addMainQuestions()" required><br><br>
+                                      <div id="main_questions_container"></div>
+                                      <?php $TableName = $_GET['TableName'] ; ?>
+                                      <!-- Hidden input field to pass $tableName -->
+                                      <input type="hidden" name="TableName" value="<?php echo htmlspecialchars($TableName); ?>">
+                                      <button type="submit">Submit</button>                                   
+                                  </form>
+
   
                                 </div>
                             </div>

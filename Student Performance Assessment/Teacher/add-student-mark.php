@@ -6,48 +6,7 @@ if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
 }else{
-     if(isset($_POST['submit']))
-   {
- 
- $ocasaid=$_SESSION['tsasaid'];
- $cid = $_SESSION['Course'];
-  $sfname=$_POST['sfname'];
-  $ssname=$_POST['ssname'];
-  $subcode=$_POST['subcode'];
- 
- $sql="insert into tblsubject(CourseID,SubjectFullname,SubjectShortname,SubjectCode)values(:cid,:sfname,:ssname,:subcode)";
- $query=$dbh->prepare($sql);
- $query->bindParam(':cid',$cid,PDO::PARAM_STR);
- $query->bindParam(':sfname',$sfname,PDO::PARAM_STR);
- $query->bindParam(':ssname',$ssname,PDO::PARAM_STR);
- $query->bindParam(':subcode',$subcode,PDO::PARAM_STR);
-  $query->execute();
- 
-    $LastInsertId=$dbh->lastInsertId();
-    if ($LastInsertId>0) {
-     echo '<script>alert("Subject has been added.")</script>';
- echo "<script>window.location.href ='subject.php'</script>";
-   }
-   else
-     {
-          echo '<script>alert("Something Went Wrong. Please try again")</script>';
-     }
- 
-   
- }
- // Code for deleting product from cart
- if(isset($_GET['delid']))
- {
- $rid=intval($_GET['delid']);
- $sql="delete from tblsubject where ID=:rid";
- $query=$dbh->prepare($sql);
- $query->bindParam(':rid',$rid,PDO::PARAM_STR);
- $query->execute();
-  echo "<script>alert('Data deleted');</script>"; 
-   echo "<script>window.location.href = 'subject.php'</script>";     
- 
- 
- }
+     
  
  ?>
 <!DOCTYPE html>
@@ -106,11 +65,79 @@ if ($_SESSION['user_role'] != 'Professor') {
                 <!-- /# row -->
                 <div id="main-content">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="width: 96% ">
                             <div class="card alert">
                                 <div class="card-header pr">
                                     <h4>Add Students Marks</h4>
                                 </div>
+                                <?php 
+// Retrieve table name from GET parameter
+$TableName = $_GET['TableName'];
+
+// Fetch data from the QuestionPaper table
+$tblQ = $TableName . '_QuestionPaper';
+$sql = "SELECT * FROM $tblQ";
+$query = $dbh->prepare($sql);
+$query->execute();
+$result = $query->fetchAll(PDO::FETCH_ASSOC);
+$num_sub_questions = $query->rowCount();
+
+// Display fetched data in a table
+if ($num_sub_questions > 0) {
+    echo "<table border='1' style='text-align: center;'>";
+    echo "<tr><th>Main Question</th><th>Subquestion Number</th><th>Subquestion</th><th>Marks</th><th>CO</th><th>BL</th></tr>";
+    foreach ($result as $row) {
+        echo "<tr>";
+        echo "<td>" . $row['main_question'] . "</td>";
+        echo "<td>" . $row['sub_question_number'] . "</td>";
+        echo "<td>" . $row['sub_question'] . "</td>";
+        echo "<td>" . $row['marks'] . "</td>";
+        echo "<td>" . $row['co'] . "</td>";
+        echo "<td>" . $row['bl'] . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+
+    // Create a new table for storing marks input if it doesn't exist
+    $marks_table_name = $TableName . "_marks";
+    $sql = "SHOW TABLES LIKE '$marks_table_name'";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    
+    if ($query->rowCount() == 0) {
+        $sql = "CREATE TABLE $marks_table_name (
+            roll_number BIGINT(11) NOT NULL,
+            ";
+        $current_question = '';
+        $current_question_number = 0;
+        foreach ($rows as $row) {
+            if ($row['main_question'] != $current_question) {
+                // Increment the current question number
+                $current_question_number++;
+                $current_question = $row['main_question'];
+                // Reset the subquestion number
+                $current_subquestion_number = 0;
+            }
+            // Increment the subquestion number
+            $current_subquestion_number++;
+            // Add columns for the subquestion and its marks
+            $sql .= "main_question" . $current_question_number . "_sub_question" . $current_subquestion_number . "_marks INT(11) NOT NULL, ";
+        }
+        $sql .= "PRIMARY KEY (roll_number)
+            )";
+            $query = $dbh->prepare($sql);
+        if ($query->execute()) {
+            echo "<p>Table $marks_table_name created successfully.</p>";
+        } else {
+            echo "Error creating table: " . $dbh->errorInfo()[2];
+        }
+    }
+}
+
+
+
+                                ?>
+
                             </div>
                         </div>
                     </div>

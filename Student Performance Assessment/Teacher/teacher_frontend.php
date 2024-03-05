@@ -71,17 +71,20 @@ if ($_SESSION['user_role'] != 'Professor') {
                                         <span><i class="ti-file f-s-22 color-warning border-warning round-widget"></i></span>
                                     </div>
                                     <div class="media-body media-text-right">
-                                        <?php 
-                        
-                                          $sql2 ="SELECT * from  tblsubject";
-                                          $query2 = $dbh -> prepare($sql2);
-                                          $query2->execute();
-                                          $results2=$query2->fetchAll(PDO::FETCH_OBJ);
-                                          $totsub=$query2->rowCount();
-                                        ?>
-                                        <h4 style="color: blue">Total Subject</h4>
+                                                                    <?php 
+                                    $ID = $_SESSION['ID'];
+                                    $sql2 = "SELECT * FROM tblsuballocation WHERE Teacherempid = :ID";
+                                    $query2 = $dbh->prepare($sql2);
+                                    $query2->bindParam(':ID', $ID, PDO::PARAM_INT);
+                                    $query2->execute();
+                                    $results2 = $query2->fetchAll(PDO::FETCH_OBJ);
+                                    $totsub = $query2->rowCount();
+                                ?>
+
+
+                                        <h4 style="color: blue">Total Allocated Subject</h4>
                                          <h4 style="color: blue"><?php echo htmlentities($totsub);?></h4>
-                                         <a href="subject.php"><h5>View Detail</h5></a>
+                                         <a href="subject-allocation.php"><h5>View Detail</h5></a>
                                     </div>
                                 </div>
                             </div>
@@ -93,17 +96,21 @@ if ($_SESSION['user_role'] != 'Professor') {
                                         <span><i class="ti-user f-s-22 color-success border-success round-widget"></i></span>
                                     </div>
                                     <div class="media-body media-text-right">
-                                        <?php 
-                        
-                                          $sql3 ="SELECT * from  teachers_data";
-                                          $query3 = $dbh -> prepare($sql3);
-                                          $query3->execute();
-                                          $results3=$query3->fetchAll(PDO::FETCH_OBJ);
-                                          $totteacher=$query3->rowCount();
-                                        ?>
-                                       <h4 style="color: blue">Total Teacher</h4>
+                                    <?php 
+                                        $ID = $_SESSION['ID'];
+                                        $sql3 = "SELECT * FROM enrolled_classes ec 
+                                                INNER JOIN tblsuballocation sa ON ec.SuballocationID = sa.ID 
+                                                WHERE sa.Teacherempid = :ID";
+                                        $query3 = $dbh->prepare($sql3);
+                                        $query3->bindParam(':ID', $ID, PDO::PARAM_INT);
+                                        $query3->execute();
+                                        $results3 = $query3->fetchAll(PDO::FETCH_OBJ);
+                                        $totteacher = $query3->rowCount();
+                                    ?>
+
+                                       <h4 style="color: blue">Total Previous Assessment</h4>
                                          <h4 style="color: blue"><?php echo htmlentities($totteacher);?></h4>
-                                         <a href="manage-teacher.php"><h5>View Detail</h5></a>
+                                         <a href="previous-assessment-details.php"><h5>View Detail</h5></a>
                                     </div>
                                 </div>
                             </div>

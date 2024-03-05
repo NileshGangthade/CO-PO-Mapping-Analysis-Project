@@ -17,7 +17,7 @@ $results=$sql->fetchAll(PDO::FETCH_OBJ);
 foreach($results as $row)
 { 
 ?>
-<option value="<?php  echo htmlentities($row->EmpID);?>"><?php  echo htmlentities($row->FirstName);?> <?php  echo htmlentities($row->LastName);?>(<?php  echo htmlentities($row->EmpID);?>)</option><?php }}
+<option value="<?php  echo htmlentities($row->ID);?>"><?php  echo htmlentities($row->FirstName);?> <?php  echo htmlentities($row->LastName);?>(<?php  echo htmlentities($row->ID);?>)</option><?php }}
 
 //For Subject
 if(!empty($_POST["cid"])) 

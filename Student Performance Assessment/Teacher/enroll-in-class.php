@@ -33,15 +33,22 @@ if ($_SESSION['user_role'] != 'Professor') {
         if ($query->execute()) {
             // Retrieve the last inserted ID
             $lastInsertId = $dbh->lastInsertId();
-            $_SESSION['ssname']= $ssname;
-            $_SESSION['SuballocationID']= $SuballocationID;
-            $_SESSION['enrollCID']= $lastInsertId;
+            // $_SESSION['ssname']= $ssname;
+            // $_SESSION['SuballocationID']= $SuballocationID;
+            // $_SESSION['enrollCID']= $lastInsertId;
+            $TableName = $lastInsertId . '_' . $ssname . '_' . $SuballocationID;
 
+             // Update the enrolled_classes table with the $TableName value
+             $updateSql = "UPDATE enrolled_classes SET TableName = :TableName WHERE ID = :lastInsertId";
+             $updateQuery = $dbh->prepare($updateSql);
+             $updateQuery->bindParam(':TableName', $TableName, PDO::PARAM_STR);
+             $updateQuery->bindParam(':lastInsertId', $lastInsertId, PDO::PARAM_INT);
+             $updateQuery->execute();
 
             // Redirect to subject.php with the last inserted ID as a query parameter
             echo '<script>alert("Subject Enrolled for the class , Now create Question paper.")</script>';
 
-            echo "<script>window.location.href ='create-question-paper.php?ssname=$ssname&SuballocationID=$SuballocationID&enrollCID=$lastInsertId'</script>";
+            echo "<script>window.location.href ='create-question-paper.php?TableName=$TableName'</script>";
             exit(); // Exit to prevent further execution
         } else {
             echo '<script>alert("Error in Enrolling subject for the class. Please try again.")</script>';
@@ -245,11 +252,11 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                                 <option value="UT1">UT1</option>
                                                                 <option value="UT2">UT2</option>
                                                                 <option value="UT3">UT3</option>
-                                                                <option value="Prelim">Prelims</option>
-                                                                <option value="Assign1">Assignment_1</option>
-                                                                <option value="Assign2">Assignment_2</option>
-                                                                <option value="Assign3">Assignment_3</option>
-                                                                <option value="Assign4">Assignment_4</option>
+                                                                <option value="Prelim">Prelim</option>
+                                                                <option value="Assignment-1">Assignment-1</option>
+                                                                <option value="Assignment-2">Assignment-2</option>
+                                                                <option value="Assignment-3">Assignment-3</option>
+                                                                <option value="Assignment-4">Assignment-4</option>
                                                             </select>
                                                         </div>
                                                     </div>
