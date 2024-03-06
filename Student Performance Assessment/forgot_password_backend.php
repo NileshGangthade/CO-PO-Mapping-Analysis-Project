@@ -77,6 +77,7 @@ if (isset($_POST['submit'])) {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
+            
             //Recipients
             $mail->setFrom('noreply.courseoutcome@gmail.com', 'Student Performance Assessment');
             $mail->addAddress($email, $name);                           //Add a recipient
