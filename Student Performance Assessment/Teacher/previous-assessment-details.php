@@ -1,7 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
-include('../dbconnection.php');
+error_reporting(0);  include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
@@ -152,7 +151,8 @@ tblcourse c ON ec.CourseID = c.ID
 INNER JOIN 
 tblsuballocation sa ON ec.SuballocationID = sa.ID
 INNER JOIN 
-tblsubject s ON ec.SubID = s.ID";
+tblsubject s ON ec.SubID = s.ID ";
+//  WHERE ec.CourseID = $cid
 
 $query = $dbh -> prepare($sql);
 $query->execute();

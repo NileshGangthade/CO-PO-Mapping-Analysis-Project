@@ -1,7 +1,7 @@
 <?php
 session_start();
-error_reporting(0);
-include('../dbconnection.php');
+error_reporting(0)
+;include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
     header("Location: login.html");
     exit();

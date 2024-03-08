@@ -1,7 +1,6 @@
 <?php
 session_start();
-error_reporting(0);
-include('../dbconnection.php');
+error_reporting(0);  include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
     header("Location: login.html");
     exit();
@@ -84,7 +83,7 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
                                     <div class="basic-form">
                                         <div class="form-group">
                                             <label>Search by Teacher Name or EmpID or Subject</label>
-                                            <input class="form-control border-none input-flat bg-ash" name="searchdata" type="text" required="true">
+                                            <input class="form-control border-none input-flat bg-ash" name="searchdata" type="text" required="true" autofocus>
                                         </div>
                                     </div>
                                 </div>
@@ -137,10 +136,10 @@ $total_rows=$query1->rowCount();
 $total_no_of_pages = ceil($total_rows / $no_of_records_per_page);
   $second_last = $total_no_of_pages - 1; // total page minus 1
                                                
-
-$sql="SELECT tblsuballocation.ID as suballid,tblsuballocation.CourseID,tblsuballocation.Teacherempid,tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate,teachers_data.EmpID,teachers_data.FirstName,teachers_data.LastName,tblcourse.BranchName,tblcourse.CourseName,tblsubject.ID,tblsubject.CourseID,tblsubject.SubjectFullname,tblsubject.SubjectShortname,tblsubject.SubjectCode from tblsuballocation join teachers_data on teachers_data.EmpID=tblsuballocation.Teacherempid join tblcourse on tblcourse.ID=tblsuballocation.CourseID join tblsubject on tblsubject.ID=tblsuballocation.Subid where teachers_data.EmpID like '$sdata%' || teachers_data.FirstName like '$sdata%' || teachers_data.LastName like '$sdata%' || tblsubject.SubjectFullname like '$sdata%'";
-$query = $dbh -> prepare($sql);
-$query->execute();
+  $sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.EmpID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid WHERE teachers_data.EmpID LIKE ? OR teachers_data.FirstName LIKE ? OR teachers_data.LastName LIKE ? OR tblsubject.SubjectFullname LIKE ?";
+  $query = $dbh->prepare($sql);
+  $query->execute(["%$sdata%", "%$sdata%", "%$sdata%", "%$sdata%"]);
+  
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 
 $cnt=1;
