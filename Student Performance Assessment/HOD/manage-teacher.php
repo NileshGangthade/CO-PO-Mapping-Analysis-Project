@@ -1,24 +1,36 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(E_ALL);
 include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'HOD') {
     header("Location: login.html");
     exit();
 }
 else {
-if(isset($_GET['delid']))
-{
-$rid=intval($_GET['delid']);
-$sql="delete from teachers_data where ID=:rid";
-$query=$dbh->prepare($sql);
-$query->bindParam(':rid',$rid,PDO::PARAM_STR);
-$query->execute();
- echo "<script>alert('Data deleted');</script>"; 
-  echo "<script>window.location.href = 'manage-teacher.php'</script>";     
-
-
-}
+    if(isset($_GET['delid'])) {
+        $rid = intval($_GET['delid']);
+        
+        // First, delete from teachers_data table
+        $sql="delete from teachers_data where EmpID=:rid";
+        $query=$dbh->prepare($sql);
+        $query->bindParam(':rid',$rid,PDO::PARAM_STR);
+        $query->execute();
+                // Second, delete from users_login table
+        $sql1 = "delete from users_login where EmpID=:rid";
+        $query1 = $dbh->prepare($sql1);
+        $query1->bindParam(':rid', $rid, PDO::PARAM_STR);
+        $query1->execute();
+    
+        // Check if deletion was successful
+        if($query->rowCount() > 0 && $query1->rowCount() > 0) {
+            echo "<script>alert('Data deleted');</script>"; 
+            echo "<script>window.location.href = 'manage-teacher.php'</script>"; 
+        } else {
+            echo "<script>alert('Failed to delete data');</script>"; 
+        }
+    }
+    
+    
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +131,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         <td><?php echo htmlentities($row['CourseName'] . '(' . $row['BranchName'] . ')');?></td>
         <td>                                           
             <span><a href="teacher-info.php?editid=<?php echo htmlentities($row['ID']);?>"><i class="ti-pencil-alt color-success"></i></a></span>
-            <span><a href="manage-teacher.php?delid=<?php echo htmlentities($row['ID']);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
+            <span><a href="manage-teacher.php?delid=<?php echo htmlentities($row['EmpID']);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
         </td>    
     </tr>
     <?php $cnt = $cnt + 1;

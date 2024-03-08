@@ -1,7 +1,15 @@
 <?php
 session_start();
-error_reporting(0);
+error_reporting(E_ALL);
 include('../dbconnection.php');
+
+  include ('../vendor/autoload.php');
+ 
+
+  use PhpOffice\PhpSpreadsheet\Spreadsheet;
+  use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+
 if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal') {
     header("Location: login.html");
     exit();
@@ -100,7 +108,84 @@ $query=$dbh->prepare($sql);
  }
  }
  }
- ?>
+
+ // PHP code for handling uploaded Excel file
+ if (isset($_POST['save_excel_data'])) {
+    $fileName = $_FILES['import_file']['name'];
+    $file_ext = pathinfo($fileName, PATHINFO_EXTENSION);
+    $allowed_ext = ['xls', 'csv', 'xlsx'];
+
+    if (in_array($file_ext, $allowed_ext)) {
+        $inputFileNamePath = $_FILES['import_file']['tmp_name'];
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
+        $data = $spreadsheet->getActiveSheet()->toArray();
+        $count = "0";
+        foreach ($data as $row) {
+
+
+            if($count > 0)
+            { 
+            $empid = $row[0];
+            $fname = $row[1];
+            $lname = $row[2];
+            $mobnum = $row[3];
+            $email = $row[4];
+            $user_role = $row[5];
+            $dob = $row[6];
+            $cid = $row[7];
+            
+            // Check if email or empid already exists
+            $query = $dbh->prepare("SELECT * FROM teachers_data WHERE Email = :email OR EmpID = :empid");
+            $query->bindParam(':email', $email, PDO::PARAM_STR);
+            $query->bindParam(':empid', $empid, PDO::PARAM_STR);
+            $query->execute();
+        
+            if ($query->rowCount() > 0) {
+                echo "<script>alert('Email or Employee ID already exists for row $count.')</script>";
+                $count +=1;
+            } else {
+                // Insert teacher data into teachers_data table
+                $sql = "INSERT INTO teachers_data (EmpID, FirstName, LastName, MobileNumber, Email, user_role, Dob, CourseID) VALUES (:empid, :fname, :lname, :mobnum, :email, :user_role, :dob, :cid)";
+                $query = $dbh->prepare($sql);
+                $query->bindParam(':empid', $empid, PDO::PARAM_STR);
+                $query->bindParam(':fname', $fname, PDO::PARAM_STR);
+                $query->bindParam(':lname', $lname, PDO::PARAM_STR);
+                $query->bindParam(':mobnum', $mobnum, PDO::PARAM_STR); // This line should work fine now
+                $query->bindParam(':email', $email, PDO::PARAM_STR);
+                $query->bindParam(':user_role', $user_role, PDO::PARAM_STR);
+                $query->bindParam(':dob', $dob, PDO::PARAM_STR);
+                $query->bindParam(':cid', $cid, PDO::PARAM_STR);
+                $query->execute();
+        
+                // Insert user data into users_login table
+                $password_plain = strtolower($fname) . '#' . str_replace('-', '', date('dmY', strtotime($dob)));
+                $password = password_hash($password_plain, PASSWORD_DEFAULT);
+        
+                $sql_user = "INSERT INTO users_login (EmpID, FirstName, LastName, Email, Course, user_role, Password) VALUES (:empid, :fname, :lname, :email, :cid, :user_role, :password)";
+                $query_user = $dbh->prepare($sql_user);
+                $query_user->bindParam(':empid', $empid, PDO::PARAM_STR);
+                $query_user->bindParam(':fname', $fname, PDO::PARAM_STR);
+                $query_user->bindParam(':lname', $lname, PDO::PARAM_STR);
+                $query_user->bindParam(':email', $email, PDO::PARAM_STR);
+                $query_user->bindParam(':cid', $cid, PDO::PARAM_STR);
+                $query_user->bindParam(':user_role', $user_role, PDO::PARAM_STR);
+                $query_user->bindParam(':password', $password, PDO::PARAM_STR);
+                $query_user->execute();
+                $count +=1;
+            }
+        }
+        else
+            {
+                $count +=1;
+            }
+        }
+        echo "<script>alert('Teachers data from Excel file uploaded successfully.')</script>";
+    } else {
+        echo "<script>alert('Invalid File')</script>";
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html>
@@ -283,7 +368,7 @@ foreach($results as $row)
                     <!-- Add teachers from Excel file -->
 <div class="card alert">
     <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
             <div class="card-header m-b-20">
                 <h4>Add Teachers Data from Excel File</h4>
             </div>
@@ -292,86 +377,17 @@ foreach($results as $row)
                     <div class="basic-form">
                         <div class="form-group">
                             <label>Upload Excel File</label>
-                            <input type="file" name="file" required accept=".xls, .xlsx">
+                            <input type="file" name="import_file" required accept=".xls, .xlsx, .csv">
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="upload">Upload</button>
+            <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="save_excel_data">Import</button>
         </form>
     </div>
 </div>
 
-<!-- PHP code for handling uploaded Excel file -->
-<?php
-if (isset($_POST['upload'])) {
-    $file_name = $_FILES['file']['name'];
-    $file_tmp = $_FILES['file']['tmp_name'];
-    $file_ext = strtolower(end(explode('.', $file_name)));
-    $extensions = array("xls", "xlsx");
 
-    if (in_array($file_ext, $extensions) === false) {
-        echo "<script>alert('Extension not allowed, please choose a valid Excel file.')</script>";
-    } else {
-        // Load PHPExcel library if not already loaded
-        require_once '../PHPExcel/Classes/PHPExcel.php';
-
-        $objPHPExcel = PHPExcel_IOFactory::load($file_tmp);
-        $sheet = $objPHPExcel->getSheet(0);
-        $highestRow = $sheet->getHighestDataRow();
-
-        for ($row = 2; $row <= $highestRow; $row++) {
-            $fname = $sheet->getCellByColumnAndRow(0, $row)->getValue();
-            $lname = $sheet->getCellByColumnAndRow(1, $row)->getValue();
-            $mobnum = $sheet->getCellByColumnAndRow(2, $row)->getValue();
-            $email = $sheet->getCellByColumnAndRow(3, $row)->getValue();
-            $empid = $sheet->getCellByColumnAndRow(4, $row)->getValue();
-            $dob = $sheet->getCellByColumnAndRow(5, $row)->getValue();
-            $cid = $sheet->getCellByColumnAndRow(6, $row)->getValue();
-            $user_role = $sheet->getCellByColumnAndRow(7, $row)->getValue();
-
-            // Check if email or empid already exists
-            $query = $dbh->prepare("SELECT * FROM teachers_data WHERE Email = :email OR EmpID = :empid");
-            $query->bindParam(':email', $email, PDO::PARAM_STR);
-            $query->bindParam(':empid', $empid, PDO::PARAM_STR);
-            $query->execute();
-
-            if ($query->rowCount() > 0) {
-                echo "<script>alert('Email or Employee ID already exists for row $row.')</script>";
-            } else {
-                // Insert teacher data into teachers_data table
-                $sql = "INSERT INTO teachers_data (EmpID, FirstName, LastName, MobileNumber, Email, user_role, Dob, CourseID) VALUES (:empid, :fname, :lname, :mobnum, :email, :user_role, :dob, :cid)";
-                $query = $dbh->prepare($sql);
-                $query->bindParam(':empid', $empid, PDO::PARAM_STR);
-                $query->bindParam(':fname', $fname, PDO::PARAM_STR);
-                $query->bindParam(':lname', $lname, PDO::PARAM_STR);
-                $query->bindParam(':mobnum', $mobnum, PDO::PARAM_STR);
-                $query->bindParam(':email', $email, PDO::PARAM_STR);
-                $query->bindParam(':user_role', $user_role, PDO::PARAM_STR);
-                $query->bindParam(':dob', $dob, PDO::PARAM_STR);
-                $query->bindParam(':cid', $cid, PDO::PARAM_STR);
-                $query->execute();
-
-                // Insert user data into users_login table
-                $password_plain = strtolower($fname) . '#' . str_replace('-', '', date('dmY', strtotime($dob)));
-                $password = password_hash($password_plain, PASSWORD_DEFAULT);
-
-                $sql_user = "INSERT INTO users_login (EmpID, FirstName, LastName, Email, Course, user_role, ProfilePic, Password) VALUES (:empid, :fname, :lname, :email, :cid, :user_role, '', :password)";
-                $query_user = $dbh->prepare($sql_user);
-                $query_user->bindParam(':empid', $empid, PDO::PARAM_STR);
-                $query_user->bindParam(':fname', $fname, PDO::PARAM_STR);
-                $query_user->bindParam(':lname', $lname, PDO::PARAM_STR);
-                $query_user->bindParam(':email', $email, PDO::PARAM_STR);
-                $query_user->bindParam(':cid', $cid, PDO::PARAM_STR);
-                $query_user->bindParam(':user_role', $user_role, PDO::PARAM_STR);
-                $query_user->bindParam(':password', $password, PDO::PARAM_STR);
-                $query_user->execute();
-            }
-        }
-        echo "<script>alert('Teachers data from Excel file uploaded successfully.')</script>";
-    }
-}
-?>
                    
                 </div>
             </div>
