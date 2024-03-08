@@ -14,6 +14,7 @@ if ($_SESSION['user_role'] != 'HOD') {
  $email=$_POST['email'];
  $dob=$_POST['dob'];
  $cid=$_POST['cid'];
+ $empid = $_POST['empid'];
  $user_role = $_POST['user_role'];
  $password=md5($_POST['password']);
  
@@ -23,9 +24,11 @@ if ($_SESSION['user_role'] != 'HOD') {
     // Start a transaction
     $dbh->beginTransaction();
 
+
     // Update the first table
-    $sql1 = "UPDATE teachers_data SET FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
+    $sql1 = "UPDATE teachers_data SET EmpID =:empid, FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
     $query1 = $dbh->prepare($sql1);
+    $query1->bindParam(':empid', $empid, PDO::PARAM_STR);
     $query1->bindParam(':fname', $fname, PDO::PARAM_STR);
     $query1->bindParam(':lname', $lname, PDO::PARAM_STR);
     $query1->bindParam(':mobnum', $mobnum, PDO::PARAM_STR);
@@ -37,8 +40,9 @@ if ($_SESSION['user_role'] != 'HOD') {
     $query1->execute();
 
     // Update the second table
-    $sql2 = "UPDATE users_login SET FirstName=:fname, LastName=:lname, Email=:email, Course=:cid, user_role=:user_role WHERE users_login.ID=:eid";
+    $sql2 = "UPDATE users_login SET EmpID =:empid, FirstName=:fname, LastName=:lname, Email=:email, Course=:cid, user_role=:user_role WHERE users_login.ID=:eid";
     $query2 = $dbh->prepare($sql2);
+    $query2->bindParam(':empid', $empid, PDO::PARAM_STR);
     $query2->bindParam(':fname', $fname, PDO::PARAM_STR);
     $query2->bindParam(':lname', $lname, PDO::PARAM_STR);
     $query2->bindParam(':email', $email, PDO::PARAM_STR);

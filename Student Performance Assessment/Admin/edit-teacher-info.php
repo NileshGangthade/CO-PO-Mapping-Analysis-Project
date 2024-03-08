@@ -24,6 +24,7 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
     // Start a transaction
     $dbh->beginTransaction();
 
+    
     // Update the first table
     $sql1 = "UPDATE teachers_data SET EmpID =:empid, FirstName=:fname, LastName=:lname, MobileNumber=:mobnum, Email=:email, Dob=:dob, CourseID=:cid, user_role=:user_role WHERE teachers_data.ID=:eid";
     $query1 = $dbh->prepare($sql1);
