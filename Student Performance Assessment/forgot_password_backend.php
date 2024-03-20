@@ -22,6 +22,8 @@ function generateOTP($length = 6)
 
 if (isset($_POST['submit'])) {
     $email = $_POST['email'];
+    echo '<script>document.getElementById("loader").style.display = "block";</script>';
+
     
 
     // Check if the email and name exist in the main_table
@@ -88,6 +90,8 @@ if (isset($_POST['submit'])) {
             $mail->Body    = $message;
 
             $mail->send();
+            echo '<script>document.getElementById("loader").style.display = "none";</script>';
+
 ?>
             <script>
                 alert("<?php echo " OTP sent to " . $email ?> ,valid for 5 min");

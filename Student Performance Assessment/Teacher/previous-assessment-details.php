@@ -5,48 +5,36 @@ if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
 }else{
-     if(isset($_POST['submit']))
-   {
- 
- $ocasaid=$_SESSION['tsasaid'];
- $cid = $_SESSION['Course'];
-  $sfname=$_POST['sfname'];
-  $ssname=$_POST['ssname'];
-  $subcode=$_POST['subcode'];
- 
- $sql="insert into tblsubject(CourseID,SubjectFullname,SubjectShortname,SubjectCode)values(:cid,:sfname,:ssname,:subcode)";
- $query=$dbh->prepare($sql);
- $query->bindParam(':cid',$cid,PDO::PARAM_STR);
- $query->bindParam(':sfname',$sfname,PDO::PARAM_STR);
- $query->bindParam(':ssname',$ssname,PDO::PARAM_STR);
- $query->bindParam(':subcode',$subcode,PDO::PARAM_STR);
-  $query->execute();
- 
-    $LastInsertId=$dbh->lastInsertId();
-    if ($LastInsertId>0) {
-     echo '<script>alert("Subject has been added.")</script>';
- echo "<script>window.location.href ='subject.php'</script>";
-   }
-   else
-     {
-          echo '<script>alert("Something Went Wrong. Please try again")</script>';
-     }
- 
-   
- }
  // Code for deleting product from cart
- if(isset($_GET['delid']))
- {
- $rid=intval($_GET['delid']);
- $sql="delete from tblsubject where ID=:rid";
- $query=$dbh->prepare($sql);
- $query->bindParam(':rid',$rid,PDO::PARAM_STR);
- $query->execute();
-  echo "<script>alert('Data deleted');</script>"; 
-   echo "<script>window.location.href = 'subject.php'</script>";     
- 
- 
- }
+ if (isset($_GET['delid'])) {
+    $rid = intval($_GET['delid']);
+
+    // Check if the student data table exists
+    $sql = "SELECT TableName FROM enrolled_classes WHERE ID = ?";
+    $query = $dbh->prepare($sql);
+    $query->execute([$rid]);
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        $studentDataTable = $row['TableName'] . "_student_data";
+        $checkTableSql = "SHOW TABLES LIKE ?";
+        $checkTableQuery = $dbh->prepare($checkTableSql);
+        $checkTableQuery->execute([$studentDataTable]);
+        $tableExists = $checkTableQuery->rowCount() > 0;
+
+        // If the student data table exists, drop it
+        if ($tableExists) {
+            $dropTableSql = "DROP TABLE $studentDataTable";
+            $dbh->exec($dropTableSql);
+        }
+    }
+
+    $sql = "DELETE FROM enrolled_classes WHERE ID = ?";
+    $query = $dbh->prepare($sql);
+    $query->execute([$rid]);
+    echo "<script>alert('Data deleted');</script>";
+    echo "<script>window.location.href = 'previous-assessment-details.php'</script>";
+}
  
  ?>
 <!DOCTYPE html>
@@ -85,7 +73,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Previous Assessment Details</h1>
+                                <h1>Assessment Details</h1>
                             </div>
                         </div>
                     </div>
@@ -95,7 +83,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
                                     <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                    <li class="active">Previous Assessment Details</li>
+                                    <li class="active">Assessment Details</li>
                                 </ol>
                             </div>
                         </div>
@@ -109,7 +97,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                         <div class="col-md-8" style="width: 96% ">
                             <div class="card alert">
                                 <div class="card-header pr">
-                                    <h4>Previous Assessment Details</h4>
+                                    <h4>Assessment Details</h4>
                                     
      
                                 </div>
@@ -125,37 +113,40 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                     <th>Year</th>
                                                     <th>Division</th>
                                                     <th>Semester</th>
-                                                    <th>Exam</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
+$userid = $_SESSION['ID'];
 $sql = "SELECT 
-ec.ID,
-ec.CourseID,
-ec.SuballocationID,
-c.CourseName,
-c.BranchName,
-ec.SubID,
-ec.Year,
-ec.Division,
-ec.Sem,
-ec.Exam,
-sa.academic_year,
-s.SubjectFullname
-FROM 
-enrolled_classes ec
-INNER JOIN 
-tblcourse c ON ec.CourseID = c.ID
-INNER JOIN 
-tblsuballocation sa ON ec.SuballocationID = sa.ID
-INNER JOIN 
-tblsubject s ON ec.SubID = s.ID ";
+            ec.ID,
+            ec.CourseID,
+            ec.SuballocationID,
+            c.CourseName,
+            c.BranchName,
+            ec.SubID,
+            ec.Year,
+            ec.Division,
+            ec.Sem,
+            ec.TableName,
+            sa.academic_year,
+            s.SubjectFullname
+        FROM 
+            enrolled_classes ec
+        INNER JOIN 
+            tblcourse c ON ec.CourseID = c.ID
+        INNER JOIN 
+            tblsuballocation sa ON ec.SuballocationID = sa.ID
+        INNER JOIN 
+            tblsubject s ON ec.SubID = s.ID 
+        WHERE 
+            sa.Teacherempid = ?";
+$query = $dbh->prepare($sql);
+$query->execute([$userid]);
+
 //  WHERE ec.CourseID = $cid
 
-$query = $dbh -> prepare($sql);
-$query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
 
 $cnt=1;
@@ -171,10 +162,9 @@ foreach($results as $row)
                                                         <td><?php echo htmlentities($row->Year);?></td>
                                                         <td><?php echo htmlentities($row->Division);?></td>
                                                         <td><?php echo htmlentities($row->Sem);?></td>
-                                                        <td><?php echo htmlentities($row->Exam);?></td>
                                                        <td>
-                                                        <span><a href="edit-subject.php?editid=<?php echo htmlentities ($row->sid);?>"><i class="ti-pencil-alt color-success"></i></a></span>
-                                                        <span><a href="subject.php?delid=<?php echo ($row->ID);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
+                                                       <span><a href="co-attainment-calculation.php?enrollID=<?php echo htmlentities($row->ID); ?>"><i class="ti-pencil-alt color-success"></i></a></span>
+                                                        <span><a href="previous-assessment-details.php?delid=<?php echo htmlentities($row->ID);?>"  onclick="return confirm('Do you really want to Delete ?');"><i class="ti-trash color-danger"></i> </a></span>
                                                        </td>
                                                 </tr>
                                                  <?php $cnt=$cnt+1;}} ?> 

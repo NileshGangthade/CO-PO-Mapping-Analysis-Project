@@ -14,20 +14,28 @@ if ($_SESSION['user_role'] != 'Professor') {
         $years = $_POST['years'];
         $div = $_POST['div'];
         $sem = $_POST['sem'];
-        $exam = $_POST['exam'];
         $SuballocationID = $_GET['suballid'];
 
+        $UT_count = $_POST['UT_count'];
+        $Prelims_count = $_POST['Prelims_count'];
+        $Assignments_count = $_POST['Assignments_count'];
+        $Experiments_count = $_POST['Experiments_count'];
+
         // Insert data into the enrolled_classes table
-        $sql = "INSERT INTO enrolled_classes (CourseID, SuballocationID, SubID, Year, Division, Sem, Exam) 
-                VALUES (:cid, :suballid, :subid, :years, :div, :sem, :exam)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':cid', $cid, PDO::PARAM_INT);
-        $query->bindParam(':suballid', $_GET['suballid'], PDO::PARAM_INT); // Assuming you get suballocation ID from the URL
-        $query->bindParam(':subid', $_GET['subid'], PDO::PARAM_INT); // Assuming you get subject ID from the URL
-        $query->bindParam(':years', $years, PDO::PARAM_INT);
-        $query->bindParam(':div', $div, PDO::PARAM_STR);
-        $query->bindParam(':sem', $sem, PDO::PARAM_STR);
-        $query->bindParam(':exam', $exam, PDO::PARAM_STR);
+        $sql = "INSERT INTO enrolled_classes (CourseID, SuballocationID, SubID, Year, Division, Sem, UnitTests, Prelims, Assignments, Experiments) 
+        VALUES (:cid, :suballid, :subid, :years, :div, :sem, :UT_count, :Prelims_count, :Assignments_count, :Experiments_count)";
+$query = $dbh->prepare($sql);
+$query->bindParam(':cid', $cid, PDO::PARAM_INT);
+$query->bindParam(':suballid', $_GET['suballid'], PDO::PARAM_INT); // Assuming you get suballocation ID from the URL
+$query->bindParam(':subid', $_GET['subid'], PDO::PARAM_INT); // Assuming you get subject ID from the URL
+$query->bindParam(':years', $years, PDO::PARAM_INT);
+$query->bindParam(':div', $div, PDO::PARAM_STR);
+$query->bindParam(':sem', $sem, PDO::PARAM_STR);
+$query->bindParam(':UT_count', $UT_count, PDO::PARAM_INT);
+$query->bindParam(':Prelims_count', $Prelims_count, PDO::PARAM_INT);
+$query->bindParam(':Assignments_count', $Assignments_count, PDO::PARAM_INT);
+$query->bindParam(':Experiments_count', $Experiments_count, PDO::PARAM_INT);
+
         
         if ($query->execute()) {
             // Retrieve the last inserted ID
@@ -45,9 +53,9 @@ if ($_SESSION['user_role'] != 'Professor') {
              $updateQuery->execute();
 
             // Redirect to subject.php with the last inserted ID as a query parameter
-            echo '<script>alert("Subject Enrolled for the class , Now create Question paper.")</script>';
-
-            echo "<script>window.location.href ='create-question-paper.php?TableName=$TableName'</script>";
+            echo '<script>alert("Subject Enrolled for the class , Now Add students Data.")</script>';
+            // echo "<script>window.location.href ='subject-setup.php?TableName=$TableName'</script>";
+            echo "<script>window.location.href ='add-students.php?TableName=$TableName'</script>";
             exit(); // Exit to prevent further execution
         } else {
             echo '<script>alert("Error in Enrolling subject for the class. Please try again.")</script>';
@@ -245,26 +253,29 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>Exam</label>
-                                                            <select class="form-control border-none input-flat bg-ash" id="exam" name="exam" required="true">
-                                                                <option value="">Select Exam</option>
-                                                                <option value="UT1">UT1</option>
-                                                                <option value="UT2">UT2</option>
-                                                                <option value="UT3">UT3</option>
-                                                                <option value="Prelim">Prelim</option>
-                                                                <option value="Assignment-1">Assignment-1</option>
-                                                                <option value="Assignment-2">Assignment-2</option>
-                                                                <option value="Assignment-3">Assignment-3</option>
-                                                                <option value="Assignment-4">Assignment-4</option>
-                                                            </select>
-                                                        </div>
+    <label>Unit Tests</label>
+    <input type="number" class="form-control border-none input-flat bg-ash" id="UT" name="UT_count" min="0" placeholder="Number of Unit Tests" required="true">
+</div>
+<div class="form-group">
+    <label>Prelims</label>
+    <input type="number" class="form-control border-none input-flat bg-ash" id="Prelim" name="Prelims_count" min="0" placeholder="Number of Prelims" required="true">
+</div>
+<div class="form-group">
+    <label>Assignments</label>
+    <input type="number" class="form-control border-none input-flat bg-ash" id="Assignment" name="Assignments_count" min="0" placeholder="Number of Assignments" required="true">
+</div>
+<div class="form-group">
+    <label>Experiments</label>
+    <input type="number" class="form-control border-none input-flat bg-ash" id="Experiment" name="Experiments_count" min="0" placeholder="Number of Experiments" required="true">
+</div>
+
                                                     </div>
                                             
                                             
                                         </div>
                                     </div>
                                     </div>
-                                    <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Create</button>
+                                    <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="submit">Enroll</button>
                                     <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="reset">Reset</button>
                                 </form>
                                 

@@ -118,7 +118,7 @@ $query=$dbh->prepare($sql);
         $inputFileNamePath = $_FILES['import_file']['tmp_name'];
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
         $data = $spreadsheet->getActiveSheet()->toArray();
-        $count = "0";
+        $count = 0;
         foreach ($data as $row) {
 
 
