@@ -150,24 +150,38 @@ $result = $query->fetch(PDO::FETCH_OBJ);
                                                     // Generate Unit Test columns
                                                     for ($i = 1; $i <= $result->UnitTests; $i++) {
                                                        //  echo '<th><a href="#">Unit Test-' . $i . '</a></th>';
-                                                       echo '<th style="padding-right: 20px;"><a href="#">Unit Test-' . $i . '</a><br><a href="#" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a></th>';
+                                                       echo '<th style="padding-right: 20px;">
+                                                                <a href="#">Unit Test-' . $i . '</a><br>
+                                                                <a href="marks-view.php?tableName=' . urlencode($result->TableName) . '&test=' . urlencode('UnitTest_' . $i) . '&enrollID=' . $enrollID . '" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a>
+                                                            </th>';
 
+                                               
                                                     }
 
                                                     // Generate Prelim columns
                                                     for ($i = 1; $i <= $result->Prelims; $i++) {
-                                                       echo '<th style="padding-right: 20px;"><a href="#">Prelim-' . $i . '</a><br><a href="#" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a></th>';
-                                                  }
+                                                        echo '<th style="padding-right: 20px;">
+                                                                <a href="#">Prelim-' . $i . '</a><br>
+                                                                <a href="marks-view.php?tableName=' . urlencode($result->TableName) . '&test=' . urlencode('Prelim_' . $i) . '&enrollID=' . $enrollID . '" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a>
+                                                            </th>';
+                                                    }
 
                                                     // Generate Assignment columns
                                                     for ($i = 1; $i <= $result->Assignments; $i++) {
-                                                       echo '<th style="padding-right: 20px;"><a href="#">Assignment-' . $i . '</a><br><a href="#" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a></th>';
-                                                  }
+                                                        echo '<th style="padding-right: 20px;">
+                                                                <a href="#">Assignment-' . $i . '</a><br>
+                                                                <a href="marks-view.php?tableName=' . urlencode($result->TableName) . '&test=' . urlencode('Assignment_' . $i) . '&enrollID=' . $enrollID . '" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a>
+                                                            </th>';
+                                                    }
 
                                                     // Generate Experiment columns
                                                     for ($i = 1; $i <= $result->Experiments; $i++) {
-                                                       echo '<th style="padding-right: 20px;"><a href="#">Experiment-' . $i . '</a><br><a href="#" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a></th>';
-                                                  }
+                                                        echo '<th style="padding-right: 20px;">
+                                                                <a href="#">Experiment-' . $i . '</a><br>
+                                                                <a href="marks-view.php?tableName=' . urlencode($result->TableName) . '&test=' . urlencode('Experiment_' . $i) . '&enrollID=' . $enrollID . '" class="btn btn-sm btn-info" style="border-radius: 10px;">View</a>
+                                                            </th>';
+                                                    }
+
                                                 ?>
                                             </tr>
                                         </thead>

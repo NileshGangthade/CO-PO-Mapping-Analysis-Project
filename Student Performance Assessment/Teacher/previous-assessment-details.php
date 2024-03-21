@@ -140,9 +140,11 @@ $sql = "SELECT
             tblsuballocation sa ON ec.SuballocationID = sa.ID
         INNER JOIN 
             tblsubject s ON ec.SubID = s.ID 
-        WHERE 
-            sa.Teacherempid = ?";
-$query = $dbh->prepare($sql);
+            WHERE 
+            sa.Teacherempid = ?
+            ORDER BY 
+            ec.ID DESC"; // Order by ID in descending order
+            $query = $dbh->prepare($sql);
 $query->execute([$userid]);
 
 //  WHERE ec.CourseID = $cid

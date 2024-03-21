@@ -5,6 +5,37 @@ if ($_SESSION['user_role'] != 'Professor') {
     header("Location: login.html");
     exit();
 }else{
+
+    $tableName = $_GET['tableName'];
+     $test = $_GET['test'];
+     $enrollID = $_GET['enrollID'];
+ 
+     // Construct the table names for questions and marks
+     $questionsTableName = $tableName . '_' . $test . '_Questions';
+     $marksTableName = $tableName . '_' . $test . '_Marks';
+
+     // Check if the questions table exists
+     $checkQuestionsTableSql = "SHOW TABLES LIKE '$questionsTableName'";
+     $checkQuestionsTableQuery = $dbh->query($checkQuestionsTableSql);
+     $questionsTableExists = $checkQuestionsTableQuery->rowCount() > 0;
+
+     if (!$questionsTableExists) {
+        header("Location: questions.php?tableName=$tableName&test=$test&enrollID=$enrollID");
+        exit();
+    }
+
+    // Check if the student data table exists
+    $studentDataTable = $tableName . "_student_data";
+    $checkTableSql = "SHOW TABLES LIKE '$studentDataTable'";
+    $checkTableQuery = $dbh->query($checkTableSql);
+    $tableExists = $checkTableQuery->rowCount() > 0;
+
+    // If the student data table doesn't exist, display a warning message
+    if (!$tableExists) {
+        echo "<script>alert('Student data table not found. Please add student data first.')</script>";
+        echo "<script>window.location.href ='add-students.php?TableName={$tableName}'</script>";
+        exit();
+    }
      
  
  ?>
@@ -19,7 +50,7 @@ if ($_SESSION['user_role'] != 'Professor') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-  <title>Add Students Marks</title>
+    <title><?php echo htmlentities($test) ?> Marks</title>
   
 
   <!-- subject css -->
@@ -44,7 +75,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Add Students Marks</h1>
+                            <h1><?php echo htmlentities($test) ?> Marks</h1>
                             </div>
                         </div>
                     </div>
@@ -54,7 +85,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
                                     <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                    <li class="active">Add Students Marks</li>
+                                    <li class="active"><?php echo htmlentities($test) ?> Marks</li>
                                 </ol>
                             </div>
                         </div>
