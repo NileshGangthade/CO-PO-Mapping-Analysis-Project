@@ -21,12 +21,19 @@ $studentsData = $query->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_POST['delete_student'])) {
      $studentID = $_POST['RollNumber']; // Get the student ID
      // Delete the corresponding record from the database
+         $stmt = $dbh->prepare("DELETE FROM $studentDataTable WHERE RollNumber = :roll_number AND Name IS NULL");
+        $stmt->bindParam(':roll_number', $studentID);
+        $stmt->execute();
      $stmt = $dbh->prepare("UPDATE $studentDataTable SET Name = NULL WHERE RollNumber = :roll_number");
      $stmt->bindParam(':roll_number', $studentID);
      $stmt->execute();
+     
+
  
      // Redirect after deleting data
-     header("Location: view-student-data.php?studentDataTable=$studentDataTable");
+    
+     echo "<script>alert('Student data Deleted successfully.')</script>";
+     echo "<script>window.location.href ='view-student-data.php?studentDataTable=" . urlencode($studentDataTable) . "&enrollID=" . urlencode($enrollID) . "'</script>";
      exit();
  }
  
@@ -201,7 +208,10 @@ label {
                     <!-- Delete Form -->
                     <form method="post" action="">
                     <input type="hidden" name="RollNumber" value="<?php echo $student['RollNumber']; ?>">
-                         <button class="btn btn-danger delete-btn" type="submit" name="delete_student">Delete</button>
+
+                    <div class="text-center">
+                        <button class="btn btn-danger delete-btn" type="submit" name="delete_student">Delete</button>
+                    </div>
                     </form>
                 </td>
             </tr>
@@ -226,10 +236,17 @@ label {
         var totalStudentsSpan = document.getElementById('total_students');
         var totalStudents = parseInt(totalStudentsSpan.textContent);
         var newRow = '<tr>' +
-            '<td><input type="number" class="form-control border-none input-flat bg-ash roll-number" name="roll_' + (totalStudents + 1) + '" value="' + (totalStudents + 1) + '" readonly></td>' +
-            '<td><input type="text" class="form-control border-none input-flat bg-ash student-name" name="name_' + (totalStudents + 1) + '" placeholder="Enter Student Name" required></td>' +
-            '<td><button class="btn btn-danger delete-row">Delete</button></td>' +
-            '</tr>';
+        '<td>' +
+    '<input type="number" class="form-control border-none input-flat bg-ash roll-number" name="roll_' + (totalStudents + 1) + '" value="' + (totalStudents + 1) + '" readonly>' +
+'</td>' +
+'<td>' +
+    '<input type="text" class="form-control border-none input-flat bg-ash student-name" name="name_' + (totalStudents + 1) + '" placeholder="Enter Student Name" required>' +
+'</td>' +
+'<td style="display: flex; justify-content: center;">' +
+    '<button class="btn btn-danger delete-btn" type="submit" name="delete_student">Delete</button>' +
+'</td>' +
+'</tr>';
+
         document.getElementById('student-fields').insertAdjacentHTML('beforeend', newRow);
         totalStudentsSpan.textContent = totalStudents + 1;
     });
