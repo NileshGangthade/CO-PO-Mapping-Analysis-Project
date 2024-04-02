@@ -130,7 +130,7 @@ if ($_SESSION['user_role'] != 'Professor') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</title>
+    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?> : Marks</title>
 
     <!-- subject css -->
     <!-- Styles -->
@@ -203,7 +203,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</h1>
+                            <h1><?php echo htmlentities(str_replace('_', '-', $test)) ?> : Marks</h1>
                         </div>
                     </div>
                 </div>
@@ -212,7 +212,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</li>
+                                <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?> : Marks</li>
                             </ol>
                         </div>
                     </div>

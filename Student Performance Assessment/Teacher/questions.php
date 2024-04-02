@@ -13,7 +13,6 @@ $test = $_GET['test'];
 $enrollID = $_GET['enrollID'];
 
 // Construct the table names for questions and marks
-// Construct the table names for questions and marks
 $questionsTableName = $tableName . '_' . $test . "_Questions";
 
 
@@ -89,7 +88,7 @@ if (isset($_POST['submit'])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?> Questions</title>
+    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?> : Questions</title>
   
 
   <!-- subject css -->
@@ -115,7 +114,7 @@ if (isset($_POST['submit'])) {
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1><?php echo htmlentities(str_replace('_', '-', $test))  ?> Questions</h1>
+                                <h1><?php echo htmlentities(str_replace('_', '-', $test))  ?> : Questions</h1>
                                 
                             </div>
                         </div>
@@ -126,7 +125,7 @@ if (isset($_POST['submit'])) {
                             <div class="page-title">
                                 <ol class="breadcrumb text-right">
                                     <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                    <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?> Questions</li>
+                                    <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?> : Questions</li>
                                 </ol>
                             </div>
                         </div>

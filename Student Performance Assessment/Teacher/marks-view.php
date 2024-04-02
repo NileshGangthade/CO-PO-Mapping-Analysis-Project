@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-error_reporting(0); // Enable error reporting to catch all errors and warnings
+error_reporting(); // Enable error reporting to catch all errors and warnings
 include('../dbconnection.php'); // Include the database connection file
 
 // Check if user is not a professor, redirect to login page if not
@@ -59,6 +59,17 @@ if ($_SESSION['user_role'] != 'Professor') {
     $checkMarksTableQuery = $dbh->prepare($checkMarksTableSql);
     $checkMarksTableQuery->execute([$marksTableName]);
     $marksTableExists = $checkMarksTableQuery->rowCount() > 0;
+
+    // create the Co Attainments table
+    $coAttainmentTableName = $tableName . '_' . $test . '_coAttainment';
+   // SQL query to create the CO attainment table if it doesn't exist
+$createTableSQL = "CREATE TABLE IF NOT EXISTS $coAttainmentTableName (
+    CO VARCHAR(255) NOT NULL PRIMARY KEY,
+    Attainment INT(11) NOT NULL
+)";
+
+// Execute the create table SQL query
+$dbh->exec($createTableSQL);
 
     // Initialize marks data array
     $marksData = array();
@@ -142,7 +153,7 @@ if ($_SESSION['user_role'] != 'Professor') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</title>
+    <title><?php echo htmlentities(str_replace('_', '-', $test)) ?></title>
 
     <!-- subject css -->
     <!-- Styles -->
@@ -171,7 +182,7 @@ if ($_SESSION['user_role'] != 'Professor') {
         /* Make other columns smaller */
         .fixed-size-table th:not(:nth-child(2)),
         .fixed-size-table td:not(:nth-child(2)) {
-            width: 70px; /* Adjust the width as needed for other columns */
+            width: 85px; /* Adjust the width as needed for other columns */
             white-space: nowrap; /* Prevent wrapping in other columns */
         }
         /* Total column */
@@ -202,6 +213,33 @@ if ($_SESSION['user_role'] != 'Professor') {
             width: 100%; /* Ensure input fields fill the cell */
             text-align: center; /* Center the text within the input field */
         }
+
+        /* Style specific to question table */
+    table.question-table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    table.question-table th, 
+    table.question-table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    table.question-table th:first-child,
+    table.question-table td:first-child {
+      width: 4%; /* Make the "Q. No." column smaller */
+    }
+    table.question-table th:nth-child(2),
+    table.question-table td:nth-child(2) {
+      width: 56%; /* Make the "Question" column wider */
+    }
+    table.question-table th:nth-child(n+3),
+    table.question-table td:nth-child(n+3) {
+      width: 10%; /* Make other columns smaller */
+    }
+    table.question-table .main-question {
+      font-weight: bold;
+    }
     </style>
 </head>
 <body>
@@ -215,7 +253,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                 <div class="col-lg-8 p-r-0 title-margin-right">
                     <div class="page-header">
                         <div class="page-title">
-                            <h1><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</h1>
+                            <h1><?php echo htmlentities(str_replace('_', '-', $test)) ?></h1>
                         </div>
                     </div>
                 </div>
@@ -224,7 +262,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                         <div class="page-title">
                             <ol class="breadcrumb text-right">
                                 <li><a href="teacher_frontend.php">Dashboard</a></li>
-                                <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?> Marks</li>
+                                <li class="active"><?php echo htmlentities(str_replace('_', '-', $test)) ?></li>
                             </ol>
                         </div>
                     </div>
@@ -235,8 +273,65 @@ if ($_SESSION['user_role'] != 'Professor') {
                     <div class="col-md-4" style="width: 96% ">
                         <div class="card alert">
                             <div class="card-header pr">
-                                <h4>Add Students Marks</h4>
+                            <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#marksCardBody" aria-expanded="false" aria-controls="marksCardBody">
+                            <span class="user-avatar"> <?php echo htmlentities(str_replace('_', '-', $test)) ?> : Questions  <span>&#8595;</span></span>
+                             </button>
                             </div>
+                            <div class="card-body collapse" id="marksCardBody">
+
+                            
+                            <div class="card-body">
+                               
+                                <table class="question-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Q. No.</th>
+                                        <th>Question</th>
+                                        <th>Marks</th>
+                                        <th>CO</th>
+                                        <th>BL</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // Fetch data from the database
+                                            $fetchQuestionsSql = "SELECT * FROM $questionsTableName ORDER BY main_question, sub_question_number";
+                                            $fetchQuestionsQuery = $dbh->query($fetchQuestionsSql);
+                                            $questions = $fetchQuestionsQuery->fetchAll(PDO::FETCH_ASSOC);
+                                                                                // Output data of each row
+                                                                                // Output data into HTML table
+                                        foreach ($questions as $row) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row['main_question'].'.'.$row['sub_question_number'] . "</td>";
+                                            echo "<td>" . $row['sub_question'] . "</td>";
+                                            echo "<td>" . $row['marks'] . "</td>";
+                                            echo "<td>" . $row['co'] . "</td>";
+                                            echo "<td>" . $row['bl'] . "</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                              
+                                
+                           
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="main-content">
+                <div class="row">
+                    <div class="col-md-4" style="width: 96% ">
+                        <div class="card alert">
+                            <div class="card-header pr">
+
+                            <button class="btn btn-link dropdown-toggle" type="button" data-toggle="collapse" data-target="#questionsCardBody" aria-expanded="false" aria-controls="questionsCardBody">
+                                <span class="user-avatar"> <?php echo htmlentities(str_replace('_', '-', $test)) ?> : Students Marks <span>&#8595;</span></span> 
+                            </button>
+                            </div>
+                            <div class="card-body collapse" id="questionsCardBody">
                             <div class="card-body">
                             <form name="" method="post" action="" enctype="multipart/form-data">
                                          <input type="hidden" name="tableName" value="<?php echo htmlspecialchars($tableName); ?>">
@@ -258,7 +353,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                     // Display question columns
                                                     foreach ($questions as $question) {
                                                         // Construct the label with marks
-                                                        $label = "{$question['main_question']}.{$question['sub_question_number']} ({$question['marks']})";
+                                                        $label = "Q - {$question['main_question']}.{$question['sub_question_number']}<br> (M - {$question['marks']})";
                                                         echo "<th>$label</th>";
                                                     }
                                                     ?>
@@ -318,13 +413,404 @@ if ($_SESSION['user_role'] != 'Professor') {
                                     <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="reset">Reset</button>
                                 </form>
                             </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="main-content">
+                <div class="row">
+                    <div class="col-md-4" style="width: 96% ">
+                        <div class="card alert">
+                            <div class="card-header pr">
+                            <h4><?php echo htmlentities(str_replace('_', '-', $test)) ?> : CO Attainment</h4>
+
+                            </div>
+
+                            
+                        <div class="card-body">  
+
+                        <div class="fixed-size-table-wrapper">
+                        <div class="container">
+                        <table class="table table-bordered fixed-size-table">
+    <thead>
+        <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <?php
+            // Fetch questions from the questions table
+            $fetchQuestionsSql = "SELECT * FROM $questionsTableName ORDER BY main_question, sub_question_number";
+            $fetchQuestionsQuery = $dbh->query($fetchQuestionsSql);
+            $questions = $fetchQuestionsQuery->fetchAll(PDO::FETCH_ASSOC);
+
+            // Store CO-wise total marks
+            $coTotalMarks = array();
+            foreach ($questions as $question) {
+                $co = $question['co'];
+                if (!isset($coTotalMarks[$co])) {
+                    $coTotalMarks[$co] = 0;
+                }
+                $coTotalMarks[$co] += $question['marks'];
+            }
+
+            // Display question columns
+            foreach ($questions as $question) {
+                // Construct the label with marks and CO total marks
+                $label = "Q - {$question['main_question']}.{$question['sub_question_number']}<br>(CO{$question['co']} - {$question['marks']})";
+                echo "<th>$label</th>";
+            }
+
+            // Display CO columns with their total marks
+            foreach ($coTotalMarks as $co => $totalMarks) {
+                echo "<th>CO - $co <br> Total: $totalMarks</th>"; // Display CO columns with total marks
+            }
+            ?>
+            <th class="total-column">Total(<?php
+                // Calculate total marks
+                $totalMarks = array_sum($coTotalMarks);
+                echo $totalMarks;
+            ?>)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        // Fetch student data
+        $fetchStudentDataSql = "SELECT * FROM $studentDataTable";
+        $fetchStudentDataQuery = $dbh->query($fetchStudentDataSql);
+        $students = $fetchStudentDataQuery->fetchAll(PDO::FETCH_ASSOC);
+
+        // Initialize arrays to store attempt counts, students secured above threshold, and percentage attainment for each question
+$attemptCountsByQuestion = array();
+$aboveThresholdCountsByQuestion = array();
+$percentageAttainmentByQuestion = array();
+
+
+ 
+         // Iterate through each question
+foreach ($questions as $question) {
+    // Initialize counts for the current question
+    $attemptCountsByQuestion[$question['main_question']][$question['sub_question_number']] = 0;
+    $aboveThresholdCountsByQuestion[$question['main_question']][$question['sub_question_number']] = 0;
+    $percentageAttainmentByQuestion[$question['main_question']][$question['sub_question_number']] = 0;
+}
+
+
+// Initialize an array to keep track of whether a student has attempted any question related to a particular CO
+$studentAttemptedCOs = array();
+// Initialize an array to store the count of students who attempted each CO
+$coAttemptCounts = array_fill_keys(array_keys($coTotalMarks), 0);
+// Initialize an array to store the count of students who scored more than 50% of the total marks for each CO
+$studentsAboveThresholdByCO = array_fill_keys(array_keys($coTotalMarks), 0);
+// Initialize an array to store the % Attainment of the total marks for each CO
+
+$coPercentageAttainment = array();
+
+foreach ($coTotalMarks as $co => $totalMarks) {
+    $coPercentageAttainment[$co] = 0;
+}
+
+
+
+        foreach ($students as $student) {
+
+             // Reset the array for each student
+    $studentAttemptedCOs[$student['RollNumber']] = array();
+
+            echo "<tr>";
+            echo "<td>{$student['RollNumber']}</td>";
+            echo "<td>{$student['Name']}</td>";
+            echo "<input type='hidden' name='rollNumber[]' value='{$student['RollNumber']}'>";
+                
+            // Display input fields for marks
+            foreach ($questions as $question) {
+                echo "<td>";
+                $markValue = 0; // Default value if no marks are found
+                foreach ($marksData as $mark) {
+                    if ($mark['RollNumber'] == $student['RollNumber'] && $mark["Q{$question['main_question']}_{$question['sub_question_number']}"]) {
+                        $markValue = $mark["Q{$question['main_question']}_{$question['sub_question_number']}"];
+
+                         // Increment attempt count if student attempted the question
+                if ($markValue > 0) {
+                    $attemptCountsByQuestion[$question['main_question']][$question['sub_question_number']]++;
+                    // Increment count if student secured above 50% threshold
+                    if ($markValue > ($question['marks'] * 0.5)) {
+                        $aboveThresholdCountsByQuestion[$question['main_question']][$question['sub_question_number']]++;
+                    }
+
+                    
+                }
+
+                // Increment attempt count if student attempted the question
+                if ($markValue > 0) {
+                    // Mark the CO as attempted for this student
+                    $studentAttemptedCOs[$student['RollNumber']][$question['co']] = true;
+                }
+                        break;
+                    }
+                }
+               
+                // Add the readonly attribute to the input fields
+                echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='{$markValue}' class='marks-input' readonly> ";
+                // If the mark value is greater than 0, increment the count for this question
+               
+                echo "</td>";
+            }
+
+            // Count the number of unique COs attempted by this student
+    $uniqueCOsAttempted = count($studentAttemptedCOs[$student['RollNumber']]);
+
+     // Increment the attempt count for each CO attempted by this student
+     foreach ($studentAttemptedCOs[$student['RollNumber']] as $co => $attempted) {
+        $coAttemptCounts[$co]++;
+    }
+
+
+
+          
+            // Display CO total columns
+        
+                foreach ($coTotalMarks as $co => $totalMarks) {
+                    // Calculate the threshold for 50%
+                    $threshold = $totalMarks * 0.5;
+
+                $coTotal = 0;
+                foreach ($questions as $question) {
+                    if ($question['co'] == $co) {
+                        $markValue = 0; // Default value if no marks are found
+                        foreach ($marksData as $mark) {
+                            if ($mark['RollNumber'] == $student['RollNumber'] && $mark["Q{$question['main_question']}_{$question['sub_question_number']}"]) {
+                                $markValue = $mark["Q{$question['main_question']}_{$question['sub_question_number']}"];
+                                break;
+                            }
+                        }
+                        $coTotal += $markValue;
+
+                    }  
+                  
+                }
+
+                
+                echo "<td>{$coTotal}</td>"; // Display CO total marks  
+                // Check if the student scored more than 50% of the total marks for this CO
+            if ($coTotal > $threshold) {
+                $studentsAboveThresholdByCO[$co]++;
+                
+            }
+
+            }
+
+            $totalValue = 0;
+            foreach ($marksData as $mark) {
+                if ($mark['RollNumber'] == $student['RollNumber']) {
+                    $totalValue = $mark['Total'];
+                    break;
+                }
+            }
+            echo "<td class='total-column' id='total[{$student['RollNumber']}]'>$totalValue</td>";
+            echo "</tr>";
+        }
+
+        ?>
+            <th colspan='2'></th>
+            <?php
+            foreach ($questions as $question) {
+                // Construct the label with marks and CO total marks
+                $label = "Q - {$question['main_question']}.{$question['sub_question_number']}<br>(CO{$question['co']})";
+                echo "<th>$label</th>";
+            }
+            foreach ($coTotalMarks as $co => $totalMarks) {
+                echo "<th>CO - $co</th>"; // Display CO columns with total marks
+            }
+            ?>
+            <th></th>
+                    <?php
+       
+
+// Calculate percentage attainment for each question
+foreach ($questions as $question) {
+    $mainQuestion = $question['main_question'];
+    $subQuestion = $question['sub_question_number'];
+
+    if ($attemptCountsByQuestion[$mainQuestion][$subQuestion] > 0) {
+        $percentageAttainmentByQuestion[$mainQuestion][$subQuestion] = ($aboveThresholdCountsByQuestion[$mainQuestion][$subQuestion] / $attemptCountsByQuestion[$mainQuestion][$subQuestion]) * 100;
+    } else {
+        $percentageAttainmentByQuestion[$mainQuestion][$subQuestion] = 0;
+    }
+}
+
+
+
+    //COS Calculate percentage attainment for the current question
+    // Iterate through each CO
+foreach ($coTotalMarks as $co => $totalMarks) {
+    if ($coAttemptCounts[$co] > 0) {
+        $coPercentageAttainment[$co] = ($studentsAboveThresholdByCO[$co] / $coAttemptCounts[$co]) * 100;
+    }
+    else {
+        $coPercentageAttainment[$co] = 0;
+    }
+}
+
+
+
+// Display the attempt counts in the specified table cell
+echo "<tr>";
+                                echo "<td colspan='2'>No. of Students Attempted</td>";
+
+                                // Question
+
+                                foreach ($questions as $question) {
+                                    $mainQuestion = $question['main_question'];
+                                    $subQuestion = $question['sub_question_number'];
+                                    echo "<td>{$attemptCountsByQuestion[$mainQuestion][$subQuestion]}</td>";
+                                }
+                                // cos
+                                foreach ($coAttemptCounts as $coAttemptCount) {
+                                    echo "<td>{$coAttemptCount}</td>";
+                                }
+                                echo "<td></td>";
+                                echo "</tr>";
+
+    
+            echo "<tr>
+            <td colspan='2'>Questionwise maximum CO-Marks</td>";
+
+            // Question
+        foreach ($questions as $question) {
+        $label = "{$question['marks']}";
+        echo "<td>$label </td>";
+        }
+        // cos
+        foreach ($coTotalMarks as $co => $totalMarks) {
+        echo "<td>$totalMarks</td>"; // Display CO columns with total marks
+        }
+        echo "<td></td>";
+        echo "</tr>";
+
+        echo "<tr>
+            <td colspan='2'>Competence 50% Threshold</td>";
+
+            // question
+            foreach ($questions as $question) {
+                $label = "{$question['marks']}";
+                $threshold = ($label * 0.5);
+                echo "<td>$threshold </td>";
+                }
+                // cos
+                foreach ($coTotalMarks as $co => $totalMarks) {
+                    $threshold = ($totalMarks * 0.5); 
+                echo "<td>$threshold</td>"; // Display CO columns with total marks
+                }
+                echo "<td></td>";
+        echo "</tr>";
+
+
+        echo "<tr>
+                                        <td colspan='2'>Total Students secured above 50% threshold</td>";
+
+                                        // question
+                                        foreach ($questions as $question) {
+                                            $mainQuestion = $question['main_question'];
+                                            $subQuestion = $question['sub_question_number'];
+                                            echo "<td>{$aboveThresholdCountsByQuestion[$mainQuestion][$subQuestion]}</td>";
+                                        }
+                                        // cos
+                                foreach ($studentsAboveThresholdByCO as $co => $count) {
+                                    echo "<td>{$count}</td>";
+                                }
+
+                                
+                                echo "<td></td>";
+                                echo "</tr>";
+
+       echo "<tr>
+                                        <td colspan='2'>Total Percentage Attainment</td>";
+
+                                        // question
+
+                                        foreach ($percentageAttainmentByQuestion as $mainQuestion => $subQuestions) {
+                                            foreach ($subQuestions as $subQuestion => $attainment) {
+                                                $attainmentLevel = 0;
+                                                // Determine attainment level based on predefined criteria
+                                                if ($attainment >= 70) {
+                                                    $attainmentLevel = 3;
+                                                } elseif ($attainment >= 60) {
+                                                    $attainmentLevel = 2;
+                                                } elseif ($attainment >= 50) {
+                                                    $attainmentLevel = 1;
+                                                }
+                                                // Output attainment level in the table cell
+                                                echo "<td>{$attainmentLevel}</td>";
+                                            }
+                                        }
+                                        
+
+                                        // cos
+                                        foreach ($coPercentageAttainment as $co => $attainment) {
+                                            $attainmentLevel = 0;
+                                            // Determine attainment level based on predefined criteria
+                                            if ($attainment >= 70) {
+                                                $attainmentLevel = 3;
+                                            } elseif ($attainment >= 60) {
+                                                $attainmentLevel = 2;
+                                            } elseif ($attainment >= 50) {
+                                                $attainmentLevel = 1;
+                                            } else {
+                                                $attainmentLevel = 0;
+                                            }
+                                            // Output attainment level in the table cell
+                                            echo "<td>{$attainmentLevel}</td>";
+                                             // Insert or update values into the coAttainment table
+                                $insertOrUpdateQuery = "INSERT INTO $coAttainmentTableName (CO, Attainment) VALUES ('$co', $attainmentLevel) ON DUPLICATE KEY UPDATE Attainment = $attainmentLevel";
+                                $dbh->exec($insertOrUpdateQuery); 
+                                        }
+
+                                
+                                echo "<td></td>";
+                                echo "</tr>";
+                    
+
+
+        ?>
+
+
+            </tbody>
+        </table>
+
+
+                           
+                        </div>
+
+                        <br>
+                        <br>
+                        <button class="btn btn-primary btn-lg m-b-10 border-none m-r-5 sbmt-btn" onclick="exportData()">Export In Excel</button>
+                        <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="">Print</button>
+  
+                            </div>
+                        </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Table to Excel -->
+
+<script>
+    function exportData(){
+	var table2excel = new Table2Excel();
+  table2excel.export(document.querySelectorAll("table.table"));	
+}
+
+</script>
+<!-- Print table -->
+
+
+<script type="text/javascript" src="../assets/js/table2excel.js"></script>
 
 <!-- scripts for subject-->
 <!-- jquery vendor -->
