@@ -5025,7 +5025,7 @@ html {
 @media (max-width: 991px) {
     .bg-warning,
     .btn-default {
-        margin-top: 30px;
+        /* margin-top: 30px; */
     }
 }
 

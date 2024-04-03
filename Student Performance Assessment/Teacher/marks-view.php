@@ -1,7 +1,7 @@
 
 <?php
 session_start();
-error_reporting(); // Enable error reporting to catch all errors and warnings
+error_reporting(0); // Enable error reporting to catch all errors and warnings
 include('../dbconnection.php'); // Include the database connection file
 
 // Check if user is not a professor, redirect to login page if not
@@ -54,22 +54,23 @@ if ($_SESSION['user_role'] != 'Professor') {
         exit();
     }
 
+        // create the Co Attainments table
+        $coAttainmentTableName = $tableName . '_' . $test . '_coAttainment';
+        // SQL query to create the CO attainment table if it doesn't exist
+     $createTableSQL = "CREATE TABLE IF NOT EXISTS $coAttainmentTableName (
+         CO VARCHAR(255) NOT NULL PRIMARY KEY,
+         Attainment INT(11) NOT NULL
+     )";
+     
+     // Execute the create table SQL query
+     $dbh->exec($createTableSQL);
+
     // Check if the marks table exists
     $checkMarksTableSql = "SHOW TABLES LIKE ?";
     $checkMarksTableQuery = $dbh->prepare($checkMarksTableSql);
     $checkMarksTableQuery->execute([$marksTableName]);
     $marksTableExists = $checkMarksTableQuery->rowCount() > 0;
 
-    // create the Co Attainments table
-    $coAttainmentTableName = $tableName . '_' . $test . '_coAttainment';
-   // SQL query to create the CO attainment table if it doesn't exist
-$createTableSQL = "CREATE TABLE IF NOT EXISTS $coAttainmentTableName (
-    CO VARCHAR(255) NOT NULL PRIMARY KEY,
-    Attainment INT(11) NOT NULL
-)";
-
-// Execute the create table SQL query
-$dbh->exec($createTableSQL);
 
     // Initialize marks data array
     $marksData = array();
@@ -83,56 +84,98 @@ $dbh->exec($createTableSQL);
 
     // Save marks data if form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
         $tableName = $_POST['tableName'];
         $test = $_POST['test'];
         $enrollID = $_POST['enrollID'];
         // Now, you can proceed with updating the data into the marks table
         $marks = $_POST['marks'];
-
+    
         // Retrieve the roll numbers from the form submission
         $rollNumbers = $_POST['rollNumber'];
-
+    
         // Initialize loop counter
         $index = 0;
-
+    
         foreach ($marks as $rollNumber => $markData) {
             // Get the roll number for the current student
             $rollNumber = $rollNumbers[$index];
-        
-            // Prepare the SQL statement to update marks data
-            $updateMarksSql = "UPDATE $marksTableName SET ";
-        
-            // Prepare placeholder for values
-            $updateMarksValues = array(); // Use the roll number obtained from the form submission
-            foreach ($markData as $questionKey => $markValue) {
-                $updateMarksValues[] = "Q$questionKey = :Q$questionKey";
-            }
             
-            // Calculate total marks for the current student
-            $total = array_sum($markData);
-        
-            // Add total marks to the update values
-            $updateMarksValues[] = "Total = :total";
-        
-            // Concatenate update fields
-            $updateMarksSql .= implode(", ", $updateMarksValues) . " WHERE RollNumber = :rollNumber";
-        
-            // Prepare the query
-            $updateMarksQuery = $dbh->prepare($updateMarksSql);
-        
-            // Bind parameters
-            foreach ($markData as $questionKey => $markValue) {
-                $updateMarksQuery->bindValue(":Q$questionKey", $markValue);
+            // Check if the roll number exists in the marks table
+            $checkRollNumberSql = "SELECT RollNumber FROM $marksTableName WHERE RollNumber = :rollNumber";
+            $checkRollNumberQuery = $dbh->prepare($checkRollNumberSql);
+            $checkRollNumberQuery->bindParam(':rollNumber', $rollNumber);
+            $checkRollNumberQuery->execute();
+            
+            if ($checkRollNumberQuery->rowCount() == 0) {
+                // Roll number does not exist in the table, insert it along with marks
+                $insertMarksSql = "INSERT INTO $marksTableName (RollNumber";
+                $insertMarksValues = "(:rollNumber";
+    
+                // Prepare placeholder for values
+                foreach ($markData as $questionKey => $markValue) {
+                    $insertMarksSql .= ", Q$questionKey";
+                    $insertMarksValues .= ", :Q$questionKey";
+                }
+                
+                // Calculate total marks for the current student
+                $total = array_sum($markData);
+                
+                // Add total marks to the insert values
+                $insertMarksSql .= ", Total)";
+                $insertMarksValues .= ", :total)";
+    
+                // Concatenate insert fields and values
+                $insertMarksSql .= " VALUES " . $insertMarksValues;
+            
+                // Prepare the query
+                $insertMarksQuery = $dbh->prepare($insertMarksSql);
+            
+                // Bind parameters
+                $insertMarksQuery->bindParam(':rollNumber', $rollNumber);
+                foreach ($markData as $questionKey => $markValue) {
+                    $insertMarksQuery->bindValue(":Q$questionKey", $markValue);
+                }
+                $insertMarksQuery->bindValue(":total", $total);
+            
+                // Execute the query
+                $insertMarksQuery->execute();
+            } else {
+                // Roll number already exists, proceed with updating marks
+                // Prepare the SQL statement to update marks data
+                $updateMarksSql = "UPDATE $marksTableName SET ";
+            
+                // Prepare placeholder for values
+                $updateMarksValues = array(); // Use the roll number obtained from the form submission
+                foreach ($markData as $questionKey => $markValue) {
+                    $updateMarksValues[] = "Q$questionKey = :Q$questionKey";
+                }
+                
+                // Calculate total marks for the current student
+                $total = array_sum($markData);
+            
+                // Add total marks to the update values
+                $updateMarksValues[] = "Total = :total";
+            
+                // Concatenate update fields
+                $updateMarksSql .= implode(", ", $updateMarksValues) . " WHERE RollNumber = :rollNumber";
+            
+                // Prepare the query
+                $updateMarksQuery = $dbh->prepare($updateMarksSql);
+            
+                // Bind parameters
+                foreach ($markData as $questionKey => $markValue) {
+                    $updateMarksQuery->bindValue(":Q$questionKey", $markValue);
+                }
+                $updateMarksQuery->bindValue(":total", $total);
+                $updateMarksQuery->bindValue(":rollNumber", $rollNumber);
+            
+                // Execute the query
+                $updateMarksQuery->execute();
             }
-            $updateMarksQuery->bindValue(":total", $total);
-            $updateMarksQuery->bindValue(":rollNumber", $rollNumber);
-        
-            // Execute the query
-            $updateMarksQuery->execute();
-        
+    
             $index++;
         }
+        
 
         // Display success message and redirect
         echo "<script>alert('Students marks are saved successfully.')</script>";
@@ -390,7 +433,7 @@ $dbh->exec($createTableSQL);
                                                                 break;
                                                             }
                                                         }
-                                                        echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='{$markValue}' class='marks-input' onchange='updateTotal(this)'> ";
+                                                        echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='{$markValue}' class='marks-input' onchange='updateTotal(this)' required> ";
                                                         echo "</td>";
                                                     }
                                                     $totalValue = 0;
@@ -433,7 +476,7 @@ $dbh->exec($createTableSQL);
 
                         <div class="fixed-size-table-wrapper">
                         <div class="container">
-                        <table class="table table-bordered fixed-size-table">
+                        <table id="co-attainment-table" class="table table-bordered fixed-size-table" >
     <thead>
         <tr>
             <th>Roll No</th>
@@ -769,6 +812,76 @@ echo "<tr>";
                                 
                                 echo "<td></td>";
                                 echo "</tr>";
+
+                                $sql = "SELECT 
+            ec.ID,
+            ec.CourseID,
+            ec.SuballocationID,
+            c.CourseName,
+            c.BranchName,
+            ec.SubID,
+            ec.Year,
+            ec.Division,
+            ec.Sem,
+            sa.academic_year,
+            s.SubjectFullname,
+            s.SubjectCode,
+            ec.UnitTests,
+            ec.Prelims,
+            ec.Assignments,
+            ec.Experiments,
+            ec.TableName
+        FROM 
+            enrolled_classes ec
+        INNER JOIN 
+            tblcourse c ON ec.CourseID = c.ID
+        INNER JOIN 
+            tblsuballocation sa ON ec.SuballocationID = sa.ID
+        INNER JOIN 
+            tblsubject s ON ec.SubID = s.ID 
+        WHERE 
+            ec.ID = ?";
+$query = $dbh->prepare($sql);
+$query->execute([$enrollID]);
+$result = $query->fetch(PDO::FETCH_OBJ);
+
+// Assign fetched values to JavaScript variables
+$department = htmlentities($result->BranchName); // Use BranchName for Department
+$academicYear = htmlentities($result->academic_year);
+$subjectFullname = htmlentities($result->SubjectFullname);
+$subjectCode = htmlentities($result->SubjectCode);
+$className = htmlentities($result->Year); // Assuming Year represents the class name
+$division = htmlentities($result->Division);
+$semester = htmlentities($result->Sem);
+$test = htmlentities(str_replace('_', '-', $test));
+
+
+                                
+                                echo '<script>
+                                    function printTable() {
+                                        var printContents = document.getElementById("co-attainment-table").outerHTML;
+                                        var originalContents = document.body.innerHTML;
+                                        var collegeLogo = \'<img src="../assets/images/college_logo.jpeg" alt="College Logo"  style=" width:100%; border:none">\';
+        
+                                        // Use fetched values here
+                                        var department = "' . $department . '"; // Department
+                                        var academicYear = "' . $academicYear . '"; // Academic Year
+                                        var subjectInfo = "' . $subjectFullname . ' (' . $subjectCode . ')"; // Subject
+                                        var test = "' . $test . '";
+                                        var classInfo = "' . $className . ' '. 'Year'. '"; // Class
+                                        var division = "' . $division . '"; // Division
+                                        var semester = "' . $semester . '"; // Semester
+                                
+                                        var header = collegeLogo + "<div style=\'text-align: center; font-size: 18px;\'>Department : " + department + "  |  Academic Year : " + academicYear + "  |  Subject : " + subjectInfo + "</div>";
+                                        header += "<div style=\'text-align: center; font-size: 18px;\'>Test : " + test + "  |  Class : " + classInfo + "  |  Division : " + division + "  |  Semester : " + semester + "</div>";
+                                        
+                                        document.body.innerHTML = header + printContents;
+                                        setTimeout(function() {
+                                            window.print();
+                                            document.body.innerHTML = originalContents;
+                                        }, 1000);
+                                    }
+                                </script>';
                     
 
 
@@ -781,11 +894,12 @@ echo "<tr>";
 
                            
                         </div>
+                        </div>
 
                         <br>
                         <br>
                         <button class="btn btn-primary btn-lg m-b-10 border-none m-r-5 sbmt-btn" onclick="exportData()">Export In Excel</button>
-                        <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" type="">Print</button>
+                        <button class="btn btn-default btn-lg m-b-10 m-l-5 sbmt-btn" onclick="printTable()">Print</button>
   
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(0);  
+error_reporting();  
 include('../dbconnection.php');
 include ('../vendor/autoload.php');
  
@@ -86,13 +86,11 @@ $dbh->exec($createTableSQL);
          $inputFileNamePath = $_FILES['import_file']['tmp_name'];
          $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
          $data = $spreadsheet->getActiveSheet()->toArray();
-         $count = 0;
- 
+         $count = 0; 
          foreach ($data as $row) {
-             if ($count > 0) {
-                 $rollNumber = $row[0]; // Assuming roll number is in the first column
-                 $name = $row[1]; // Assuming name is in the second column
- 
+            if ($count > 0) { // Skip the first row (column names)
+                $rollNumber = (int)$row[0]; // Convert to integer
+                $name = $row[1];
                  // Check if roll number already exists
                  $query = $dbh->prepare("SELECT * FROM $student_data_TableName WHERE RollNumber = :rollNumber");
                  $query->bindParam(':rollNumber', $rollNumber, PDO::PARAM_STR);
@@ -110,6 +108,7 @@ $dbh->exec($createTableSQL);
                  }
              }
              $count++;
+            
          }
          echo "<script>alert('Student data uploaded successfully.')</script>";
          echo "<script>window.location.href ='co-attainment-calculation.php?enrollID=$enrollID'</script>";

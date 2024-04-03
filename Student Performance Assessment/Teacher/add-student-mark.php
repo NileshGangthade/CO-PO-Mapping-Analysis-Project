@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(); // Enable error reporting to catch all errors and warnings
+error_reporting(0); // Enable error reporting to catch all errors and warnings
 include('../dbconnection.php'); // Include the database connection file
 
 // Check if user is not a professor, redirect to login page if not
@@ -276,8 +276,15 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                     // Display input fields for marks
                                                     foreach ($questions as $question) {
                                                         echo "<td>";
-                                                        echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='0' class='marks-input' onchange='updateTotal(this)'> ";
-                                                        echo "</td>";
+                                                        echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' 
+                                                        max='{$question['marks']}' 
+                                                        min='0'  
+                                                        class='marks-input' 
+                                                        onchange='updateTotal(this)'
+                                                        placeholder='0' 
+                                                        required 
+                                                        autofocus>";
+                                                                                                    echo "</td>";
                                                     }
                                                     echo "<td class='total-column' id='total[{$student['RollNumber']}]'>0</td>";
                                                     echo "</tr>";

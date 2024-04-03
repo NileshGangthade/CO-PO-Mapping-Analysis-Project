@@ -82,7 +82,10 @@ foreach ($updatedStudents as $index => $studentName) {
          $stmt->bindParam(':roll_number', $index);
          $stmt->bindParam(':name', $studentName);
          $stmt->execute();
+
+     
      }
+
  
      echo "<script>alert('Student data saved successfully.')</script>";
      echo "<script>window.location.href ='co-attainment-calculation.php?enrollID=" . $enrollID . "'</script>";

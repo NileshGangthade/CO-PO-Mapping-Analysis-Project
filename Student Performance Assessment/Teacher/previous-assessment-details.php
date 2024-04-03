@@ -16,26 +16,33 @@ if ($_SESSION['user_role'] != 'Professor') {
     $row = $query->fetch(PDO::FETCH_ASSOC);
 
     if ($row) {
-        $studentDataTable = $row['TableName'] . "_student_data";
+        $tableNamePrefix = $row['TableName'];
+
+        // Construct wildcard pattern to match table names
+        $wildcardTableName = $tableNamePrefix . "_%";
+
+        // Get all tables matching the wildcard pattern
         $checkTableSql = "SHOW TABLES LIKE ?";
         $checkTableQuery = $dbh->prepare($checkTableSql);
-        $checkTableQuery->execute([$studentDataTable]);
-        $tableExists = $checkTableQuery->rowCount() > 0;
+        $checkTableQuery->execute([$wildcardTableName]);
+        $matchingTables = $checkTableQuery->fetchAll(PDO::FETCH_COLUMN);
 
-        // If the student data table exists, drop it
-        if ($tableExists) {
-            $dropTableSql = "DROP TABLE $studentDataTable";
+        // Drop each matching table
+        foreach ($matchingTables as $matchingTable) {
+            $dropTableSql = "DROP TABLE $matchingTable";
             $dbh->exec($dropTableSql);
         }
     }
 
+    // Delete the row from enrolled_classes table
     $sql = "DELETE FROM enrolled_classes WHERE ID = ?";
     $query = $dbh->prepare($sql);
     $query->execute([$rid]);
+
     echo "<script>alert('Data deleted');</script>";
     echo "<script>window.location.href = 'previous-assessment-details.php'</script>";
 }
- 
+
  ?>
 <!DOCTYPE html>
 <html>

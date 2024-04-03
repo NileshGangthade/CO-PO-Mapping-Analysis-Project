@@ -134,14 +134,14 @@ if (isset($_POST['submit'])) {
                 </div>
                 <!-- /# row -->
                 <div id="main-content">
-                    <div class="row">
-                        
-                        <div class="col-md-8" style="width: 96% ">
-
+                <div class="row">
+                    <div class="col-md-4" style="width: 96% ">
                         <div class="card alert">
-                                <div class="card-header pr">
+                            <div class="card-header pr">
                                 
                                 <h4>Create Question Paper</h4>
+                            </div>
+                            <div class="card-body">
                                     <form name="" method="post" action="" enctype="multipart/form-data">
                                         <label for="num_main_questions">Number of Main Questions:</label>
                                         <input type="number" id="num_main_questions" name="num_main_questions" min="1" onchange="addMainQuestions()" required><br><br>
@@ -165,6 +165,7 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </div>
+
 
 
 
