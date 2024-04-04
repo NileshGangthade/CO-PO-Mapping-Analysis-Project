@@ -479,6 +479,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                         <table id="co-attainment-table" class="table table-bordered fixed-size-table" >
     <thead>
         <tr>
+
             <th>Roll No</th>
             <th>Name</th>
             <?php
@@ -563,7 +564,7 @@ foreach ($coTotalMarks as $co => $totalMarks) {
             echo "<tr>";
             echo "<td>{$student['RollNumber']}</td>";
             echo "<td>{$student['Name']}</td>";
-            echo "<input type='hidden' name='rollNumber[]' value='{$student['RollNumber']}'>";
+            // echo "<input type='hidden' name='rollNumber[]' value='{$student['RollNumber']}'>";
                 
             // Display input fields for marks
             foreach ($questions as $question) {
@@ -594,9 +595,9 @@ foreach ($coTotalMarks as $co => $totalMarks) {
                 }
                
                 // Add the readonly attribute to the input fields
-                echo "<input type='number' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='{$markValue}' class='marks-input' readonly> ";
+                // echo "<input type='hidden' name='marks[{$student['RollNumber']}][{$question['main_question']}_{$question['sub_question_number']}]' max='{$question['marks']}' min='0' value='{$markValue}'> ";
                 // If the mark value is greater than 0, increment the count for this question
-               
+                echo "$markValue";
                 echo "</td>";
             }
 
@@ -912,19 +913,30 @@ $test = htmlentities(str_replace('_', '-', $test));
     </div>
 </div>
 
-<!-- Table to Excel -->
+     <!-- Scripts for Export Data in excel -->
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
 
 <script>
-    function exportData(){
-	var table2excel = new Table2Excel();
-  table2excel.export(document.querySelectorAll("table.table"));	
+  function exportData() {
+/* Get table HTML */
+var table = document.getElementById('co-attainment-table');
+
+/* Convert table to worksheet */
+var ws = XLSX.utils.table_to_sheet(table);
+
+/* Create workbook and add the worksheet */
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+/* Save workbook */
+XLSX.writeFile(wb, '<?php echo htmlentities($subjectFullname) . " (" . htmlentities(str_replace('_', '-', $test)) . ") CO_attainment.xlsx"; ?>');
 }
 
 </script>
-<!-- Print table -->
 
 
-<script type="text/javascript" src="../assets/js/table2excel.js"></script>
 
 <!-- scripts for subject-->
 <!-- jquery vendor -->

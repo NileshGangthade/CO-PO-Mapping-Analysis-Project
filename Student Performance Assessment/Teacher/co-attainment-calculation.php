@@ -491,7 +491,31 @@ echo '<script>
       </div>
       
 
+
+      <!-- Scripts for Export Data in excel -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+
+      <script>
+        function exportData() {
+    /* Get table HTML */
+    var table = document.getElementById('direct-attainment-table');
+    
+    /* Convert table to worksheet */
+    var ws = XLSX.utils.table_to_sheet(table);
+    
+    /* Create workbook and add the worksheet */
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    
+    /* Save workbook */
+    XLSX.writeFile(wb, '<?php echo htmlentities($subjectFullname) . " (" . htmlentities($subjectCode) . ") Final_attainment.xlsx"; ?>');
+}
+
+      </script>
   
+
 
   <!-- scripts for subject-->
  <!-- jquery vendor -->

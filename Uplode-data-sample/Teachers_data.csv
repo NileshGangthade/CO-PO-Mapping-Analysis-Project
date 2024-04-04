@@ -1,0 +1,5 @@
+EmpID,FirstName,LastName,MobileNumber,Email,user_role,Dob,CourseID
+ex1,excel1,data,168900642,ex1@gmail.com,Admin,2024-01-01,2
+ex2,excel2,data1,125373537,ex2@gmail.com,HOD,2024-01-01,2
+ex3,excel3,Data 2,113234242,ex3@gmail.com,HOD,2024-01-01,2
+ex4,Ex4,ex4,123454325,ex4,HOD,2024-01-01,3
