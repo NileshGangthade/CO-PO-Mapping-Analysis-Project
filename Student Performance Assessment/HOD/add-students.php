@@ -8,7 +8,7 @@ include ('../vendor/autoload.php');
   use PhpOffice\PhpSpreadsheet\Spreadsheet;
   use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-if ($_SESSION['user_role'] != 'Professor') {
+  if ($_SESSION['user_role'] != 'HOD') {
     header("Location: login.html");
     exit();
 }

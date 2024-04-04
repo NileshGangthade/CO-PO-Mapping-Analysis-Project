@@ -8,6 +8,7 @@ if ($_SESSION['user_role'] != 'HOD') {
      if(isset($_POST['submit']))
    {
  
+    
  $ocasaid=$_SESSION['tsasaid'];
  $cid = $_SESSION['Course'];
   $sfname=$_POST['sfname'];

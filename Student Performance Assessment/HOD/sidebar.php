@@ -8,6 +8,10 @@
                     </li>
                      <li><a href="subject.php"><i class="ti-files"></i>Subject</a>
                     </li>
+                    <li><a href="previous-assessment-details.php"><i class="ti-files"></i>Assessment Details</a>
+                    </li>
+                    <li><a href="subject-allocated.php"><i class="ti-files"></i>Allocated Subjects</a>
+                    </li>
                     
 
                  

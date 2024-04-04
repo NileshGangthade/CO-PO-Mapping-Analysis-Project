@@ -6,6 +6,8 @@ if ($_SESSION['user_role'] != 'HOD') {
     exit();
 }
 
+$ocasaid=$_SESSION['tsasaid'];
+$courseId = $_SESSION['Course'];
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +22,7 @@ if ($_SESSION['user_role'] != 'HOD') {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
   <title>Admin dashboard</title>
+  
   
 
   <!-- Dashboard css -->
@@ -72,7 +75,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                                     <div class="media-body media-text-right">
                                         <?php 
                         
-                                          $sql2 ="SELECT * from  tblsubject";
+                                          $sql2 ="SELECT * from  tblsubject WHERE CourseID = $courseId";
                                           $query2 = $dbh -> prepare($sql2);
                                           $query2->execute();
                                           $results2=$query2->fetchAll(PDO::FETCH_OBJ);
@@ -94,7 +97,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                                     <div class="media-body media-text-right">
                                         <?php 
                         
-                                          $sql3 ="SELECT * from  teachers_data";
+                                          $sql3 ="SELECT * from  teachers_data WHERE CourseID = $courseId";
                                           $query3 = $dbh -> prepare($sql3);
                                           $query3->execute();
                                           $results3=$query3->fetchAll(PDO::FETCH_OBJ);
@@ -103,6 +106,57 @@ if ($_SESSION['user_role'] != 'HOD') {
                                        <h4 style="color: blue">Total Teacher</h4>
                                          <h4 style="color: blue"><?php echo htmlentities($totteacher);?></h4>
                                          <a href="manage-teacher.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-file f-s-22 color-warning border-warning round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                                                    <?php 
+                                    $ID = $_SESSION['ID'];
+                                    $sql2 = "SELECT * FROM tblsuballocation WHERE CourseID = :courseId";
+                                    $query2 = $dbh->prepare($sql2);
+                                    $query2->bindParam(':courseId', $courseId, PDO::PARAM_INT);
+                                    $query2->execute();
+                                    $results2 = $query2->fetchAll(PDO::FETCH_OBJ);
+                                    $totsub = $query2->rowCount();
+                                ?>
+
+
+                                        <h4 style="color: blue">Total Allocated Subject</h4>
+                                         <h4 style="color: blue"><?php echo htmlentities($totsub);?></h4>
+                                         <a href="subject-allocation.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-user f-s-22 color-success border-success round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                    <?php 
+                                       
+                                        $sql3 = "SELECT * FROM enrolled_classes WHERE CourseID = :ID";
+                                        $query3 = $dbh->prepare($sql3);
+                                        $query3->bindParam(':ID', $courseId, PDO::PARAM_INT);
+                                        $query3->execute();
+                                        $results3 = $query3->fetchAll(PDO::FETCH_OBJ);
+                                        $totteacher = $query3->rowCount();
+                                    ?>
+
+                                       <h4 style="color: blue">Total Previous Assessment</h4>
+                                         <h4 style="color: blue"><?php echo htmlentities($totteacher);?></h4>
+                                         <a href="previous-assessment-details.php"><h5>View Detail</h5></a>
                                     </div>
                                 </div>
                             </div>

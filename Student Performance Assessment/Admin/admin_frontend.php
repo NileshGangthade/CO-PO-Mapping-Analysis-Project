@@ -128,6 +128,32 @@ if ($_SESSION['user_role'] != 'Admin'  && $_SESSION['user_role'] != 'Principal')
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="media">
+                                    <div class="media-left meida media-middle">
+                                        <span><i class="ti-file f-s-22 color-warning border-warning round-widget"></i></span>
+                                    </div>
+                                    <div class="media-body media-text-right">
+                                                                    <?php 
+                                    
+                                    $sql2 = "SELECT * FROM tblsuballocation";
+                                    $query2 = $dbh->prepare($sql2);
+                                    $query2->execute();
+                                    $results2 = $query2->fetchAll(PDO::FETCH_OBJ);
+                                    $totsub = $query2->rowCount();
+                                ?>
+
+
+                                        <h4 style="color: blue">Total Allocated Subject</h4>
+                                         <h4 style="color: blue"><?php echo htmlentities($totsub);?></h4>
+                                         <a href="subject-allocation.php"><h5>View Detail</h5></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                      
                     </div>
                   

@@ -1,11 +1,11 @@
 <?php
 session_start();
-error_reporting(0);  include('../dbconnection.php');
-if ($_SESSION['user_role'] != 'Professor') {
+error_reporting();  include('../dbconnection.php');
+if ($_SESSION['user_role'] != 'HOD') {
     header("Location: login.html");
     exit();
 } else {
-    
+ 
     // Code for deleting product from cart
     if (isset($_GET['delid'])) {
         $rid = intval($_GET['delid']);
@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] != 'Professor') {
         $query->bindParam(':rid', $rid, PDO::PARAM_STR);
         $query->execute();
         echo "<script>alert('Data deleted');</script>";
-        echo "<script>window.location.href = 'subject-allocation.php'</script>";
+        echo "<script>window.location.href = 'subject-allocated.php'</script>";
     }
 }
 ?>
@@ -91,18 +91,18 @@ if ($_SESSION['user_role'] != 'Professor') {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $userid = $_SESSION['ID'];
+                                            // $userid = $_SESSION['ID'];
                                             $courseId = $_SESSION['Course'];
                                             $sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID as subid, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode 
                                             FROM tblsuballocation 
                                             JOIN teachers_data ON teachers_data.ID = tblsuballocation.Teacherempid 
                                             JOIN tblcourse ON tblcourse.ID = tblsuballocation.CourseID 
                                             JOIN tblsubject ON tblsubject.ID = tblsuballocation.Subid 
-                                            WHERE tblcourse.ID = :courseId AND teachers_data.ID = :userid 
+                                            WHERE tblcourse.ID = :courseId  
                                             ORDER BY tblsuballocation.ID DESC"; // Order by ID in descending order
                                                                                 $query = $dbh->prepare($sql);
                                             $query->bindParam(':courseId', $courseId, PDO::PARAM_STR);
-                                            $query->bindParam(':userid', $userid, PDO::PARAM_STR);
+                                            // $query->bindParam(':userid', $userid, PDO::PARAM_STR);
                                             $query->execute();
                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
 
@@ -129,7 +129,7 @@ if ($_SESSION['user_role'] != 'Professor') {
                                                         </td>
                                                         <td>
                                                         <span><a href="enroll-in-class.php?subid=<?php echo ($row->subid); ?>&suballid=<?php echo ($row->suballid); ?>" class="btn btn-primary">Enroll in Class </a></span>
-                                                        <span><a href="subject-allocation.php?delid=<?php echo ($row->suballid); ?>" onclick="return confirm('Do you really want to Delete ?');" class="btn btn-danger">DELETE </a></span>
+                                                        <span><a href="subject-allocated.php?delid=<?php echo ($row->suballid); ?>" onclick="return confirm('Do you really want to Delete ?');" class="btn btn-danger">DELETE </a></span>
                                                         </td>
                                                     </tr>
                                             <?php

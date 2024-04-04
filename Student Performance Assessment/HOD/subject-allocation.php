@@ -8,7 +8,6 @@ if ($_SESSION['user_role'] != 'HOD') {
      if(isset($_POST['submit']))
    {
  
- $tsasaid=$_SESSION['tsasaid'];
  $cid = $_SESSION['Course'];
   $teachereid=$_POST['teachereid'];
   $subject=$_POST['subject'];
@@ -167,7 +166,7 @@ if ($_SESSION['user_role'] != 'HOD') {
                 foreach($results as $row)
                 {               
             ?>
-    <option value="<?php echo htmlentities($row->EmpID); ?>"><?php echo htmlentities($row->FirstName); ?> <?php echo htmlentities($row->LastName); ?>(<?php echo htmlentities($row->EmpID); ?>)</option><?php $cnt=$cnt+1;}} ?>
+    <option value="<?php echo htmlentities($row->ID); ?>"><?php echo htmlentities($row->FirstName); ?> <?php echo htmlentities($row->LastName); ?>(<?php echo htmlentities($row->EmpID); ?>)</option><?php $cnt=$cnt+1;}} ?>
 </select>
 
     </div>
@@ -233,7 +232,8 @@ if ($_SESSION['user_role'] != 'HOD') {
                                             </thead>
                                             <tbody>
                                                 <?php
-$sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.EmpID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid WHERE tblcourse.ID = $courseId";
+
+$sql = "SELECT tblsuballocation.ID as suballid, tblsuballocation.CourseID, tblsuballocation.Teacherempid, tblsuballocation.Subid, tblsuballocation.academic_year, tblsuballocation.AllocationDate, teachers_data.EmpID, teachers_data.FirstName, teachers_data.LastName, tblcourse.BranchName, tblcourse.CourseName, tblsubject.ID, tblsubject.CourseID, tblsubject.SubjectFullname, tblsubject.SubjectShortname, tblsubject.SubjectCode FROM tblsuballocation JOIN teachers_data ON teachers_data.ID=tblsuballocation.Teacherempid JOIN tblcourse ON tblcourse.ID=tblsuballocation.CourseID JOIN tblsubject ON tblsubject.ID=tblsuballocation.Subid WHERE tblcourse.ID = $courseId";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
