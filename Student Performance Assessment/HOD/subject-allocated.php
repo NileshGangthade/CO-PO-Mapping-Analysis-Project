@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting();  include('../dbconnection.php');
+error_reporting(0);  include('../dbconnection.php');
 if ($_SESSION['user_role'] != 'HOD') {
     header("Location: login.html");
     exit();
