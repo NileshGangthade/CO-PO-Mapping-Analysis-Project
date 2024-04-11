@@ -125,7 +125,7 @@ $query->bindParam(':Experiments_count', $Experiments_count, PDO::PARAM_INT);
             </div>
             <div id="main-content">
                 <div class="row">
-                    <div class="col-md-8 offset-md-2">
+                    <div class="col-md-10 offset-md-2">
                         <div class="card alert">
                             <div class="card-header pr">
                                 <h4>Enroll in Class</h4>

@@ -2,6 +2,8 @@
 session_start();
 error_reporting(0);
 include('../dbconnection.php');
+include ('../vendor/autoload.php');
+
 
 if ($_SESSION['user_role'] != 'HOD') {
     header("Location: login.html");
@@ -90,6 +92,56 @@ foreach ($updatedStudents as $index => $studentName) {
      echo "<script>alert('Student data saved successfully.')</script>";
      echo "<script>window.location.href ='co-attainment-calculation.php?enrollID=" . $enrollID . "'</script>";
      exit();
+ }
+ // PHP code for handling uploaded Excel file
+ if (isset($_POST['save_excel_data'])) {
+
+    // Create table if not exists
+    $createTableSQL = "CREATE TABLE IF NOT EXISTS $studentDataTable (
+        RollNumber INT(20) PRIMARY KEY,
+        Name VARCHAR(50)
+    )";
+$dbh->exec($createTableSQL);
+    
+
+     $fileName = $_FILES['import_file']['name'];
+     $file_ext = pathinfo($fileName, PATHINFO_EXTENSION);
+     $allowed_ext = ['xls', 'csv', 'xlsx'];
+ 
+     if (in_array($file_ext, $allowed_ext)) {
+         $inputFileNamePath = $_FILES['import_file']['tmp_name'];
+         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileNamePath);
+         $data = $spreadsheet->getActiveSheet()->toArray();
+         $count = 0; 
+         foreach ($data as $row) {
+            if ($count > 0) { // Skip the first row (column names)
+                $rollNumber = (int)$row[0]; // Convert to integer
+                $name = $row[1];
+                 // Check if roll number already exists
+                 $query = $dbh->prepare("SELECT * FROM $studentDataTable WHERE RollNumber = :rollNumber");
+                 $query->bindParam(':rollNumber', $rollNumber, PDO::PARAM_STR);
+                 $query->execute();
+ 
+                 if ($query->rowCount() > 0) {
+                     echo "<script>alert('Roll number already exists for row $count.')</script>";
+                 } else {
+                     // Insert student data into students_data table
+                     $sql = "INSERT INTO $studentDataTable (RollNumber, Name) VALUES (:rollNumber, :name)";
+                     $query = $dbh->prepare($sql);
+                     $query->bindParam(':rollNumber', $rollNumber, PDO::PARAM_STR);
+                     $query->bindParam(':name', $name, PDO::PARAM_STR);
+                     $query->execute();
+                 }
+             }
+             $count++;
+            
+         }
+         echo "<script>alert('Student data uploaded successfully.')</script>";
+         echo "<script>window.location.href ='co-attainment-calculation.php?enrollID=$enrollID'</script>";
+         exit();
+     } else {
+         echo "<script>alert('Invalid File')</script>";
+     }
  }
  ?>
 
@@ -229,8 +281,30 @@ label {
                     </div>
                 </div>
             </div>
+             <!-- Add Students from Excel file -->
+             <div class="card alert">
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="card-header m-b-20">
+                                <h4>Add Student Data from Excel File</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="basic-form">
+                                        <div class="form-group">
+                                            <label>Upload Excel File</label>
+                                            <input type="file" name="import_file" required accept=".xls, .xlsx, .csv">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-default btn-lg m-b-10 bg-warning border-none m-r-5 sbmt-btn" type="submit" name="save_excel_data">Import</button>
+                        </form>
+                    </div>
+                </div>
         </div>
     </div>
+
 </div>
 
 <script>

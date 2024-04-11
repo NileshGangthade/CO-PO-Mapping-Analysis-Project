@@ -6,8 +6,7 @@
                     <li class="label">Main</li>
                     <li><a href="hod_frontend.php" ><i class="ti-home"></i>Dashboard</a></li>
                     </li>
-                     <li><a href="subject.php"><i class="ti-files"></i>Subject</a>
-                    </li>
+                     
                     <li><a href="previous-assessment-details.php"><i class="ti-files"></i>Assessment Details</a>
                     </li>
                     <li><a href="subject-allocated.php"><i class="ti-files"></i>Allocated Subjects</a>
@@ -23,6 +22,8 @@
                             <li><a href="manage-teacher.php">Manage Teacher</a></li>
                            
                         </ul>
+                    </li>
+                    <li><a href="subject.php"><i class="ti-files"></i>Subject</a>
                     </li>
                       <li><a href="subject-allocation.php"><i class="ti-files"></i>Subject Allocation</a>
                     </li>
